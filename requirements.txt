@@ -4,3 +4,4 @@ channels_redis~=2.0
 dj-database-url==0.5.0
 django-redis==4.9.0
 whitenoise==3.3.1
+Twisted[tls,http2]==18.4.0
