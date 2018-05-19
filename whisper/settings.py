@@ -6,9 +6,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 ##### Channels-specific settings
-
-redis_host = os.environ.get('REDISCLOUD_URL', 'localhost')
-
 # Channel layer definitions
 # http://channels.readthedocs.io/en/latest/topics/channel_layers.html
 CHANNEL_LAYERS = {
@@ -16,7 +13,7 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation channels_redis
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, 6379)],
+            "hosts": [os.environ.get('REDISCLOUD_URL'), ],
         },
     },
 }
