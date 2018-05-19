@@ -2,8 +2,8 @@ from django.conf import settings
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from .exceptions import ClientError
-from .utils import get_room_or_error
+from chat.exceptions import ClientError
+from chat.utils import get_room_or_error
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
@@ -15,13 +15,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     behind database_sync_to_async or sync_to_async. For more, read
     http://channels.readthedocs.io/en/latest/topics/consumers.html
     """
-
-    ##### WebSocket event handlers
+    # WebSocket event handlers
 
     async def connect(self):
-        """
-        Called when the websocket is handshaking as part of initial connection.
-        """
+        """Called when the websocket is handshaking as part of initial connection."""
         # Are they logged in?
         if self.scope["user"].is_anonymous:
             # Reject the connection
@@ -32,7 +29,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         # Store which rooms the user has joined on this connection
         self.rooms = set()
 
-    async def receive_json(self, content):
+    async def receive_json(self, content, **kwargs):
         """
         Called when we get a text frame. Channels will JSON-decode the payload
         for us and pass it as the first argument.
@@ -53,9 +50,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.send_json({"error": e.code})
 
     async def disconnect(self, code):
-        """
-        Called when the WebSocket closes for any reason.
-        """
+        """Called when the WebSocket closes for any reason."""
         # Leave all the rooms we are still in
         for room_id in list(self.rooms):
             try:
@@ -66,9 +61,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     ##### Command helper methods called by receive_json
 
     async def join_room(self, room_id):
-        """
-        Called by receive_json when someone sent a join command.
-        """
+        """Called by receive_json when someone sent a join command."""
         # The logged-in user is in our scope thanks to the authentication ASGI middleware
         room = await get_room_or_error(room_id, self.scope["user"])
         # Send a join message if it's turned on
@@ -95,9 +88,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         })
 
     async def leave_room(self, room_id):
-        """
-        Called by receive_json when someone sent a leave command.
-        """
+        """Called by receive_json when someone sent a leave command."""
         # The logged-in user is in our scope thanks to the authentication ASGI middleware
         room = await get_room_or_error(room_id, self.scope["user"])
         # Send a leave message if it's turned on
@@ -123,9 +114,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         })
 
     async def send_room(self, room_id, message):
-        """
-        Called by receive_json when someone sends a message to a room.
-        """
+        """Called by receive_json when someone sends a message to a room."""
         # Check they are in this room
         if room_id not in self.rooms:
             raise ClientError("ROOM_ACCESS_DENIED")
@@ -141,13 +130,11 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             }
         )
 
-    ##### Handlers for messages sent over the channel layer
+    # Handlers for messages sent over the channel layer
 
     # These helper methods are named by the types we send - so chat.join becomes chat_join
     async def chat_join(self, event):
-        """
-        Called when someone has joined our chat.
-        """
+        """Called when someone has joined our chat."""
         # Send a message down to the client
         await self.send_json(
             {
@@ -158,9 +145,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         )
 
     async def chat_leave(self, event):
-        """
-        Called when someone has left our chat.
-        """
+        """Called when someone has left our chat."""
         # Send a message down to the client
         await self.send_json(
             {
@@ -171,9 +156,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         )
 
     async def chat_message(self, event):
-        """
-        Called when someone has messaged our chat.
-        """
+        """Called when someone has messaged our chat."""
         # Send a message down to the client
         await self.send_json(
             {
