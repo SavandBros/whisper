@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Run Django database migrations after deploy to Heroku. This file must
+# live at `bin/post_compile` within your root project directory.
+# ``AUTO_MIGRATE`` has been added to control where this should be running.
+# For sure we don't want such thing be happening on Production servers,
+# only for staging.
+
+if [ $AUTO_MIGRATE == True ]; then
+    echo "=> Performing database migrations..."
+    python manage.py migrate --noinput
+fi
