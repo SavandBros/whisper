@@ -51,3 +51,4 @@ node_modules/
 coverage_html/
 media_test/
 .translations/
+staticfiles/

@@ -3,3 +3,4 @@ channels~=2.0,>=2.0.2
 channels_redis~=2.0
 dj-database-url==0.5.0
 django-redis==4.9.0
+whitenoise==3.3.1
