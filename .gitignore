@@ -1,0 +1,53 @@
+## IDE specific
+# And yeah, you are using some kind of IDE around.
+*.idea
+.project
+.pydevproject
+.ropeproject/
+.vscode/
+
+## file
+# Python compiled files.
+*.pyc
+# GetText compiled files.
+*.mo
+# Okay, SQLITE db, In dev env of course.
+*.db
+db.sqlite*
+# And yeah this is env. HeHe!
+.env
+# you know this file is somehow suspicious, i don't know!
+settings_local.py
+# Backup files, mostly with unix editors.
+*~
+# Sometimes in dev env, I've got to use dump solution.
+dump.json
+
+## dir
+# FileSystemCacheBasedBackend.
+cache/
+# Build will cum to your face where packaging is involved.
+build/
+# I remember i was young and keeps web-server logs in such a dir.
+logs/
+# And what da fuck is src/ doing here? I don't know.
+src/
+# you know media/ dir is where django keeps user-uploaded shit.
+media/
+# So daddy wanna know about code coverage.
+.coverage
+# Django dev trunk folder/repo dir
+django-trunk/
+# archive
+archive/
+.elasticbeanstalk/
+# celery schedulers database file (shelve)
+celerybeat-schedule
+# Ignore Sphinx documentation
+docs/
+bower_components/
+node_modules/
+.static/
+coverage_html/
+media_test/
+.translations/
