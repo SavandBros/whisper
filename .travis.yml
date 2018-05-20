@@ -5,9 +5,8 @@ install:
   - "pip install -q -e ."
   - "pip install -q -r requirements/dev.txt"
   - "pip install codecov"
-
 script:
   - "fab cq"
-  - "fab test"
+  - "fab coverage"
 after_success:
   - codecov
