@@ -8,3 +8,4 @@ Twisted[tls,http2]==18.4.0
 psycopg2-binary==2.7.4
 django-allauth==0.36.0
 django-environ==0.4.4
+Fabric3==1.14.post1
