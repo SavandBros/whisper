@@ -1,6 +1,11 @@
 Whisper
 =======
 
+.. image:: https://travis-ci.org/SavandBros/whisper.svg?branch=master
+    :target: https://travis-ci.org/SavandBros/whisper
+.. image:: https://codecov.io/gh/SavandBros/whisper/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/SavandBros/whisper
+
 Basic example of a multi-room chatroom, with messages from all rooms a user
 is in multiplexed over a single WebSocket connection.
 
