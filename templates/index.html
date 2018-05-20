@@ -1,11 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Whisper{% endblock %}
-{% block header_text %}Whisper{% endblock %}
 
 {% block content %}
 
-  <div class="container" ng-controller="IndexController as index">
+  <div class="container mt-5" ng-controller="IndexController as index">
 
     <div class="nav nav-pills">
       {% for room in rooms %}
