@@ -21,12 +21,14 @@
 
 {% block extra_body %}
   <script>
-      Notification.requestPermission(function (permission) {
-          // If the user accepts, let's create a notification
-          if (permission === "granted") {
-              var notification = new Notification("You'll see notification from now ;)");
-          }
-      });
+      if (Notification.permission !== "denied") {
+          Notification.requestPermission(function (permission) {
+              // If the user accepts, let's create a notification
+              if (permission === "granted") {
+                  var notification = new Notification("Thanks ;)");
+              }
+          });
+      }
 
       function notify(message) {
           // Let's check if the browser supports notifications
@@ -45,7 +47,6 @@
               Notification.requestPermission(function (permission) {
                   // If the user accepts, let's create a notification
                   if (permission === "granted") {
-                      console.log('going to notify! 2');
                       var notification = new Notification(message);
                   }
               });
