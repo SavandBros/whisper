@@ -59,6 +59,7 @@
           var ws_path = ws_scheme + '://' + window.location.host + "/chat/stream/";
           console.log("Connecting to " + ws_path);
           var socket = new ReconnectingWebSocket(ws_path);
+          var ownUsername = "{{ request.user.username }}";
 
           // Handle incoming messages
           socket.onmessage = function (message) {
@@ -104,12 +105,15 @@
                   switch (data.msg_type) {
                       case 0:
                           // Message
-                          console.log("should notify");
-                          notify(data.username + ": " + data.message);
                           ok_msg = "<div class='message'>" +
                               "<span class='username'>" + data.username + "</span>" +
                               "<span class='body'>" + data.message + "</span>" +
                               "</div>";
+
+                          if (ownUsername == data.username) {
+                              notify(data.username + ": " + data.message);
+                          }
+
                           break;
                       case 1:
                           // Warning / Advice messages
