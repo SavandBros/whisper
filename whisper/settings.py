@@ -17,7 +17,7 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation channels_redis
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [os.environ.get('REDISCLOUD_URL', 'localhost'), ],
+            "hosts": [os.environ.get('REDISCLOUD_URL', ('localhost', 6379)), ],
         },
     },
 }
@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
@@ -138,7 +139,7 @@ USE_L10N = True
 USE_TZ = True
 SITE_ID = 1
 
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
