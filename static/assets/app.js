@@ -12,6 +12,20 @@ app.config(function ($locationProvider, $compileProvider) {
 });
 
 /**
+ * App constant
+ */
+app.constant("UTILS", {
+  MESSAGE_TYPE: {
+    NORMAL: 0,
+    WARNING: 1,
+    ALERT: 2,
+    MUTE: 3,
+    JOIN: 4,
+    LEAVE: 5
+  }
+});
+
+/**
  * Main controller
  */
 app.controller("MainController", function () {
@@ -27,7 +41,7 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function () {
+app.controller("IndexController", function (UTILS) {
 
   this.constructor = function () {
 
@@ -114,7 +128,7 @@ app.controller("IndexController", function () {
           // msg types are defined in chat/settings.py
           // Only for demo purposes is hardcoded, in production scenarios, consider call a service.
           switch (data.msg_type) {
-            case 0:
+            case UTILS.MESSAGE_TYPE.NORMAL:
               // Message
               ok_msg = "<div class='message'>" +
                   "<span class='username'>" + data.username + "</span>" +
@@ -126,32 +140,26 @@ app.controller("IndexController", function () {
               }
 
               break;
-            case 1:
+            case UTILS.MESSAGE_TYPE.WARNING:
               // Warning / Advice messages
-              ok_msg = "<div class='contextual-message text-warning'>" + data.message +
-                  "</div>";
+              ok_msg = "<div class='contextual-message text-warning'>" + data.message + "</div>";
               break;
-            case 2:
+            case UTILS.MESSAGE_TYPE.ALERT:
               // Alert / Danger messages
-              ok_msg = "<div class='contextual-message text-danger'>" + data.message +
-                  "</div>";
+              ok_msg = "<div class='contextual-message text-danger'>" + data.message + "</div>";
               break;
-            case 3:
+            case UTILS.MESSAGE_TYPE.MUTE:
               // "Muted" messages
-              ok_msg = "<div class='contextual-message text-muted'>" + data.message +
-                  "</div>";
+              ok_msg = "<div class='contextual-message text-muted'>" + data.message + "</div>";
               break;
-            case 4:
+            case UTILS.MESSAGE_TYPE.JOIN:
               // User joined room
-              ok_msg = "<div class='contextual-message text-muted'>" + data.username +
-                  " joined the room!" +
+              ok_msg = "<div class='contextual-message text-muted'>" + data.username + " joined the room!" +
                   "</div>";
               break;
-            case 5:
+            case UTILS.MESSAGE_TYPE.LEAVE:
               // User left room
-              ok_msg = "<div class='contextual-message text-muted'>" + data.username +
-                  " left the room!" +
-                  "</div>";
+              ok_msg = "<div class='contextual-message text-muted'>" + data.username + " left the room!" + "</div>";
               break;
             default:
               console.log("Unsupported message type!");
