@@ -54,102 +54,37 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
    */
   vm.currentRoom = 0;
 
+  /**
+   * @type {Array<objecy>}
+   */
+  vm.messages = [];
+
   vm.constructor = function () {
 
-    // Check notification
+    /**
+     * Check notification permission
+     */
     if (Notification.permission !== "denied") {
       Notification.requestPermission();
     }
 
-    // Correctly decide between ws:// and wss://
+    /**
+     * Correctly decide between ws:// and wss://
+     */
     vm.ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
-
-    // Handle incoming messages
+    
+    /**
+     * On socket message
+     */
     vm.socket.onmessage = function (message) {
-      // Decode the JSON
-      console.log("Got websocket message " + message.data);
       var data = JSON.parse(message.data);
-      // Handle errors
+      vm.messages.shift(data);
+      $scope.$apply();
+
       if (data.error) {
         alert(data.error);
-        return;
-      }
-      // Handle joining
-      if (data.join) {
-        console.log("Joining room " + data.join);
-        var roomdiv = $(
-            "<div class='room' id='room-" + data.join + "'>" +
-            "<h2>" + data.title + "</h2>" +
-            "<div class='messages'></div>" +
-            "<form><input><button>Send</button></form>" +
-            "</div>"
-        );
-        // Hook up send button to send a message
-        roomdiv.find("form").on("submit", function () {
-          vm.socket.send(JSON.stringify({
-            "command": "send",
-            "room": data.join,
-            "message": roomdiv.find("input").val()
-          }));
-          roomdiv.find("input").val("");
-          return false;
-        });
-        $("#chats").append(roomdiv);
-        // Handle leaving
-      } else if (data.leave) {
-        console.log("Leaving room " + data.leave);
-        $("#room-" + data.leave).remove();
-        // Handle getting a message
-      } else if (data.message || data.msg_type != 0) {
-        var msgdiv = $("#room-" + data.room + " .messages");
-        var ok_msg = "";
-        // msg types are defined in chat/settings.py
-        // Only for demo purposes is hardcoded, in production scenarios, consider call a service.
-        switch (data.msg_type) {
-          case UTILS.MESSAGE_TYPE.NORMAL:
-            // Message
-            ok_msg = "<div class='message'>" +
-                "<span class='username'>" + data.username + "</span>" +
-                "<span class='body'>" + data.message + "</span>" +
-                "</div>";
-
-            if (SETTING.USER.USERNAME != data.username) {
-              vm.notify(data.username + ": " + data.message);
-            }
-
-            break;
-          case UTILS.MESSAGE_TYPE.WARNING:
-            // Warning / Advice messages
-            ok_msg = "<div class='contextual-message text-warning'>" + data.message + "</div>";
-            break;
-          case UTILS.MESSAGE_TYPE.ALERT:
-            // Alert / Danger messages
-            ok_msg = "<div class='contextual-message text-danger'>" + data.message + "</div>";
-            break;
-          case UTILS.MESSAGE_TYPE.MUTE:
-            // "Muted" messages
-            ok_msg = "<div class='contextual-message text-muted'>" + data.message + "</div>";
-            break;
-          case UTILS.MESSAGE_TYPE.JOIN:
-            // User joined room
-            ok_msg = "<div class='contextual-message text-muted'>" + data.username + " joined the room!" +
-                "</div>";
-            break;
-          case UTILS.MESSAGE_TYPE.LEAVE:
-            // User left room
-            ok_msg = "<div class='contextual-message text-muted'>" + data.username + " left the room!" + "</div>";
-            break;
-          default:
-            console.log("Unsupported message type!");
-            return;
-        }
-        msgdiv.append(ok_msg);
-
-        msgdiv.scrollTop(msgdiv.prop("scrollHeight"));
-      } else {
-        console.log("Cannot handle message!");
       }
     };
 
@@ -205,6 +140,20 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
     // In another room, leave that one and join again
     vm.openRoom(vm.currentRoom);
     vm.openRoom(roomId);
+  }
+
+  /**
+   * Send a message to current room
+   *
+   * @param {string} message
+   */
+  vm.message = function (message) {
+    vm.socket.send(JSON.stringify({
+      "command": "send",
+      "room": vm.currentRoom,
+      "message": message
+    }));
+    message = "";
   }
 
   /**
