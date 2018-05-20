@@ -11,14 +11,15 @@
   <title>{% block title %}{% endblock %}</title>
 
   <link rel="stylesheet" href="{% static "lib/bootstrap/bootstrap.css" %}"/>
-  <link rel="stylesheet" href="{% static "assets/app.css" %}"/>
+  <link rel="stylesheet" href="{% static "assets/app.css" %}?1"/>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Sans:400,700">
 
   <script src="{% static "lib/jquery/jquery.js" %}"></script>
   <script src="{% static "lib/popper/popper.js" %}"></script>
   <script src="{% static "lib/bootstrap/bootstrap.js" %}"></script>
   <script src="{% static "lib/angular/angular.js" %}"></script>
   <script src="{% static "lib/reconnecting-websocket/reconnecting-websocket.js" %}"></script>
-  <script src="{% static "assets/app.js" %}"></script>
+  <script src="{% static "assets/app.js" %}?1"></script>
 
   {% if user.is_authenticated %}
     <script>
@@ -34,16 +35,57 @@
 </head>
 <body ng-app="whisper" ng-controller="MainController as main">
 
-<header>
-  <h1>{% block header_text %}{% endblock %}</h1>
-  {% if user.is_authenticated %}
-    <a href="{% url "users:logout" %}">Logout</a>
-  {% endif %}
-</header>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+  <div class="container">
 
+    <!-- Brand -->
+    <a class="navbar-brand" href="/">Whisper</a>
+
+    <!-- Toggle button -->
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Links -->
+    <div class="collapse navbar-collapse" id="navbar">
+
+      <!-- Left -->
+      <ul class="navbar-nav mr-auto"></ul>
+
+      <!-- Right -->
+      <ul class="navbar-nav">
+
+        <!-- Auth -->
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+              <b>{{ user.username }}</b>
+            </a>
+            <div class="dropdown-menu">
+              <!-- Profile -->
+              <a class="dropdown-item" href="{% url "users:redirect" %}">
+                <i class="fas fa-fw fa-user-circle"></i> Profile
+              </a>
+              <!-- Settings -->
+              <a class="dropdown-item" href="{% url "users:update" %}">
+                <i class="fas fa-fw fa-cog"></i> Settings
+              </a>
+              <!-- Log out -->
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url "users:logout" %}">
+                <i class="fas fa-fw fa-sign-out-alt"></i> Logout
+              </a>
+            </div>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Content -->
 {% block content %}{% endblock %}
-
-{% block extra_body %}{% endblock %}
 
 </body>
 </html>
