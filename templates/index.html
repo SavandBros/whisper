@@ -7,17 +7,23 @@
 
   <div class="container" ng-controller="IndexController as index">
 
-  </div>
+    <div class="nav nav-pills">
+      {% for room in rooms %}
+        <li class="nav-item">
+          <a ng-href="#{{ room.id }}" class="nav-link mr-2"
+             ng-class="{active: index.currentRoom == {{ room.id }}}"
+             ng-click="index.openRoom({{ room.id }})">
+            {{ room.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </div>
 
-  <ul class="rooms">
-    {% for room in rooms %}
-      <li class="room-link" data-room-id="{{ room.id }}">{{ room }}</li>
-    {% empty %}
-      <p class="empty">No chat rooms defined. Maybe make some in the <a href="{% url 'admin:index' %}">admin</a>?</p>
-    {% endfor %}
-  </ul>
+    <hr>
 
-  <div id="chats">
+    <div id="chats">
+    </div>
+
   </div>
 
 {% endblock %}
