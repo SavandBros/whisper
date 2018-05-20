@@ -6,9 +6,11 @@ var app = angular.module("whisper", []);
 /**
  * App config
  */
-app.config(function ($locationProvider, $compileProvider) {
+app.config(function ($locationProvider, $compileProvider, $interpolateProvider) {
   $locationProvider.hashPrefix("");
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|sms|tel):/);
+  $interpolateProvider.startSymbol('[[');
+  $interpolateProvider.endSymbol(']]');
 });
 
 /**
@@ -43,30 +45,29 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING) {
+app.controller("IndexController", function (UTILS, SETTING, $scope) {
 
   var vm = this;
+
+  /**
+   * @type {number}
+   */
+  vm.currentRoom = 0;
 
   vm.constructor = function () {
 
     // Check notification
     if (Notification.permission !== "denied") {
-      Notification.requestPermission(function (permission) {
-        // If the user accepts, let's create a notification
-        if (permission === "granted") {
-          var notification = new Notification("Connected!");
-        }
-      });
+      Notification.requestPermission();
     }
 
     // Correctly decide between ws:// and wss://
-    var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-    var ws_path = ws_scheme + '://' + window.location.host + "/chat/stream/";
-    var socket = new ReconnectingWebSocket(ws_path);
-    var ownUsername = SETTING.USER.USERNAME;
+    vm.ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
+    vm.socket = new ReconnectingWebSocket(vm.ws_path);
 
     // Handle incoming messages
-    socket.onmessage = function (message) {
+    vm.socket.onmessage = function (message) {
       // Decode the JSON
       console.log("Got websocket message " + message.data);
       var data = JSON.parse(message.data);
@@ -87,7 +88,7 @@ app.controller("IndexController", function (UTILS, SETTING) {
         );
         // Hook up send button to send a message
         roomdiv.find("form").on("submit", function () {
-          socket.send(JSON.stringify({
+          vm.socket.send(JSON.stringify({
             "command": "send",
             "room": data.join,
             "message": roomdiv.find("input").val()
@@ -114,7 +115,7 @@ app.controller("IndexController", function (UTILS, SETTING) {
                 "<span class='body'>" + data.message + "</span>" +
                 "</div>";
 
-            if (ownUsername != data.username) {
+            if (SETTING.USER.USERNAME != data.username) {
               vm.notify(data.username + ": " + data.message);
             }
 
@@ -152,35 +153,59 @@ app.controller("IndexController", function (UTILS, SETTING) {
       }
     };
 
-    // Room join/leave
-    $("li.room-link").click(function () {
-      roomId = $(this).attr("data-room-id");
-      if (vm.inRoom(roomId)) {
-        // Leave room
-        $(this).removeClass("joined");
-        socket.send(JSON.stringify({
-          "command": "leave",
-          "room": roomId
-        }));
-      } else {
-        // Join room
-        $(this).addClass("joined");
-        socket.send(JSON.stringify({
-          "command": "join",
-          "room": roomId
-        }));
-      }
-    });
+    /**
+     * On socket open
+     */
+    vm.socket.onopen = function () {
 
-    // Helpful debugging
-    socket.onopen = function () {
       console.log("Connected to chat socket");
+
+      // Join the last visited room
+      if (location.hash) {
+        vm.openRoom(parseInt(location.hash.split("#")[1]));
+        $scope.$apply();
+      }
     };
 
-    socket.onclose = function () {
+    /**
+     * On socket close
+     */
+    vm.socket.onclose = function () {
       console.log("Disconnected from chat socket");
-    }
+    };
   };
+
+  /**
+   * Join the room and leave others
+   *
+   * @param roomId
+   */
+  vm.openRoom = function (roomId) {
+
+    // Not in any room, join this one
+    if (!vm.currentRoom) {
+      vm.currentRoom = roomId;
+      vm.socket.send(JSON.stringify({
+        "command": "join",
+        "room": roomId
+      }));
+      return;
+    }
+
+    // Is in this room, leave
+    if (vm.currentRoom == roomId) {
+      vm.currentRoom = 0;
+      vm.socket.send(JSON.stringify({
+        "command": "leave",
+        "room": roomId
+      }));
+      return;
+    }
+
+    // In another room, leave that one and join again
+    vm.openRoom(vm.currentRoom);
+    vm.openRoom(roomId);
+  }
 
   /**
    * Create and handle notification
