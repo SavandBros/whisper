@@ -58,8 +58,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             except ClientError:
                 pass
 
-    ##### Command helper methods called by receive_json
-
+    # Command helper methods called by receive_json
     async def join_room(self, room_id):
         """Called by receive_json when someone sent a join command."""
         # The logged-in user is in our scope thanks to the authentication ASGI middleware

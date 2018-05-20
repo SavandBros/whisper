@@ -1,0 +1,13 @@
+language: python
+python:
+  - "3.6"
+install:
+  - "pip install -q -e ."
+  - "pip install -q -r requirements/dev.txt"
+  - "pip install codecov"
+
+script:
+  - "fab cq"
+  - "fab test"
+after_success:
+  - codecov
