@@ -110,7 +110,7 @@
                               "<span class='body'>" + data.message + "</span>" +
                               "</div>";
 
-                          if (ownUsername == data.username) {
+                          if (ownUsername != data.username) {
                               notify(data.username + ": " + data.message);
                           }
 
