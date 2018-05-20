@@ -4,7 +4,7 @@ Whisper
 .. image:: https://travis-ci.org/SavandBros/whisper.svg?branch=master
     :target: https://travis-ci.org/SavandBros/whisper
 .. image:: https://codecov.io/gh/SavandBros/whisper/branch/master/graph/badge.svg
-  :target: https://codecov.io/gh/SavandBros/whisper
+    :target: https://codecov.io/gh/SavandBros/whisper
 
 Basic example of a multi-room chatroom, with messages from all rooms a user
 is in multiplexed over a single WebSocket connection.
@@ -143,7 +143,7 @@ merged back into "master" and "production".
 
 
 Branches
-^^^^^^^^
+--------
 
 Branch **production**, should be last and stable working code that is on
 Production servers. All the pull requests (from Master branch) should
@@ -165,7 +165,7 @@ checks, including and not limited to:
 
 
 Deployment
-^^^^^^^^^^
+----------
 
 Deployment happens automatically via the CI.
 
@@ -174,7 +174,7 @@ branch **production** will be deployed to production server.
 
 
 Release
-^^^^^^^
+-------
 
 To release a new version or have the latest changes on the production:
 
