@@ -62,7 +62,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
   };
 
   /**
-   * @type {Array<objecy>}
+   * @type {Array<object>}
    */
   vm.messages = [];
 
@@ -78,7 +78,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
     /**
      * Correctly decide between ws:// and wss://
      */
-    vm.ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+    vm.ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
     vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
 
@@ -86,11 +86,21 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
      * On socket message
      */
     vm.socket.onmessage = function (message) {
+
+      // Add to message list
       var data = JSON.parse(message.data);
-      console.log("New socket message", data);
       vm.messages.push(data);
       $scope.$apply();
 
+      // Debug
+      console.log("New socket message", data);
+
+      // Notify
+      if (data.username !== SETTING.USER.USERNAME) {
+        vm.notify(data.message);
+      }
+
+      // Handle error
       if (data.error) {
         alert(data.error);
       }
