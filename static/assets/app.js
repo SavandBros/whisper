@@ -261,16 +261,6 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
   };
 
   /**
-   * Says if we joined a room or not by if there's a div for it
-   *
-   * @param {number} roomId
-   * @returns {boolean}
-   */
-  vm.inRoom = function (roomId) {
-    return $("#room-" + roomId).length > 0;
-  };
-
-  /**
    * Handle focus of window
    */
   angular.element(window).on("load focus", function () {
