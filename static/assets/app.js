@@ -193,6 +193,11 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
    */
   vm.notify = function (message) {
 
+    // Check undefined
+    if (typeof message === "undefined") {
+      return;
+    }
+
     // Let's check if the browser supports notifications
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
