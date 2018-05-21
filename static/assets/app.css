@@ -1,0 +1,32 @@
+/* Global */
+
+body {
+    font-family: "PT Sans", sans-serif;
+}
+
+a,
+button,
+[ui-sref],
+[ng-click] {
+    cursor: pointer;
+    text-decoration: none !important;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar {
+    background: ghostwhite;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #343a40;
+}
+
+/* Navbar */
+
+.navbar-brand {
+    font-weight: bold;
+}
