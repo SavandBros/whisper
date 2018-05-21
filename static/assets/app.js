@@ -40,6 +40,18 @@ app.service("Room", function () {
 });
 
 /**
+ * Message class
+ */
+app.service("Message", function () {
+  return function (data) {
+    var self = this;
+    self.message = data.message;
+    self.username = data.username;
+    self.kind = data.msg_type;
+  };
+});
+
+/**
  * Main controller
  */
 app.controller("MainController", function () {
@@ -57,16 +69,11 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) {
+app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message, $scope) {
 
   var vm = this;
 
   vm.constructor = function () {
-
-    /**
-     * @type {number}
-     */
-    vm.currentRoom = 0;
 
     /**
      * @type {Array<object>}
@@ -79,14 +86,15 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
     };
 
     /**
-     * @type {Array<object>}
-     */
-    vm.messages = [];
-
-    /**
      * @type {Array<Room>}
      */
     vm.rooms = [];
+
+    /**
+     * Current room instance
+     * @type {Room}
+     */
+    vm.room = null;
 
     /**
      * Get rooms
@@ -113,14 +121,13 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
      * On socket message
      */
     vm.socket.onmessage = function (message) {
-
-      // Add to message list
       var data = JSON.parse(message.data);
-      vm.messages.push(data);
-      $scope.$apply();
-
-      // Debug
       console.log("New socket message", data);
+
+      // Add to room messages
+      if (vm.room) {
+        vm.room.messages.push(new Message(data));
+      }
 
       // Notify
       if (data.username !== SETTING.USER.USERNAME) {
@@ -131,6 +138,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
       if (data.error) {
         alert(data.error);
       }
+
+      // Update template
+      $scope.$apply();
     };
 
     /**
@@ -142,8 +152,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
 
       // Join the last visited room
       if (location.hash) {
-        vm.openRoom(parseInt(location.hash.split("#")[1]));
-        $scope.$apply();
+        var index = parseInt(location.hash.split("#")[1]);
+        if (vm.rooms[index]) {
+          vm.openRoom(vm.rooms[index]);
+          $scope.$apply();
+        }
       }
     };
 
@@ -156,35 +169,33 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
   };
 
   /**
-   * Join the room and leave others
-   *
-   * @param roomId
+   * @param {Room} room
    */
-  vm.openRoom = function (roomId) {
+  vm.openRoom = function (room) {
 
     // Not in any room, join this one
-    if (!vm.currentRoom) {
-      vm.currentRoom = roomId;
+    if (!vm.room) {
+      vm.room = room;
       vm.socket.send(JSON.stringify({
         "command": "join",
-        "room": roomId
+        "room": room.id
       }));
       return;
     }
 
     // Is in this room, leave
-    if (vm.currentRoom == roomId) {
-      vm.currentRoom = 0;
+    if (vm.room.id == room.id) {
+      vm.room = null;
       vm.socket.send(JSON.stringify({
         "command": "leave",
-        "room": roomId
+        "room": room.id
       }));
       return;
     }
 
     // In another room, leave that one and join again
-    vm.openRoom(vm.currentRoom);
-    vm.openRoom(roomId);
+    vm.openRoom(vm.room);
+    vm.openRoom(room);
   };
 
   /**
@@ -202,7 +213,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) 
     // Send message
     vm.socket.send(JSON.stringify({
       "command": "send",
-      "room": vm.currentRoom,
+      "room": vm.room.id,
       "message": vm.chatForm.message
     }));
 
