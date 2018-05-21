@@ -60,6 +60,9 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
      * @type {Array<object>}
      */
     vm.chatForm = {
+      /**
+       * @type {string}
+       */
       message: "",
     };
 
