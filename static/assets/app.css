@@ -2,6 +2,7 @@
 
 body {
     font-family: "PT Sans", sans-serif;
+    background: whitesmoke;
 }
 
 a,
@@ -14,11 +15,11 @@ button,
 
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar {
-    background: ghostwhite;
+    background: whitesmoke;
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
+    width: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -38,4 +39,12 @@ button,
 
 .navbar-brand {
     font-weight: bold;
+}
+
+
+/* Chat wrapper */
+
+.chat-wrapper {
+    background: white;
+    margin: 30px 0;
 }
