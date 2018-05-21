@@ -36,6 +36,17 @@ app.service("Room", function () {
     self.id = data.id;
     self.title = data.title;
     self.messages = [];
+    self.joined = false;
+    self.join = function (socket) {
+      if (self.joined) {
+        return;
+      }
+      self.joined = true;
+      socket.send(JSON.stringify({
+        "command": "join",
+        "room": self.id
+      }));
+    };
   };
 });
 
@@ -178,29 +189,14 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    */
   vm.openRoom = function (room) {
 
-    // Not in any room, join this one
-    if (!vm.room) {
-      vm.room = room;
-      vm.socket.send(JSON.stringify({
-        "command": "join",
-        "room": room.id
-      }));
+    // Alrady in this room
+    if (vm.room && vm.room.id == room.id) {
       return;
     }
 
-    // Is in this room, do nothing
-    if (vm.room.id == room.id) {
-      vm.room = null;
-      vm.socket.send(JSON.stringify({
-        "command": "leave",
-        "room": room.id
-      }));
-      return;
-    }
-
-    // In another room, leave that one and join again
-    vm.openRoom(vm.room);
-    vm.openRoom(room);
+    // Open this room (join if not already in)
+    vm.room = room;
+    vm.room.join(vm.socket);
   };
 
   /**
