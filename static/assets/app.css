@@ -2,7 +2,7 @@
 
 body {
     font-family: "PT Sans", sans-serif;
-    background: whitesmoke;
+    background: hsl(0, 0%, 95%);
 }
 
 a,
@@ -49,7 +49,6 @@ button,
     background: white;
     margin: 30px 0;
     border: 1px solid hsl(0, 0%, 90%);
-    min-height: 357px;
 }
 
 #chat-wrapper p {
@@ -65,7 +64,7 @@ button,
     border-bottom: 1px solid hsl(0, 0%, 90%);
 }
 
-#chat-rooms li {
+#chat-rooms a {
     margin-right: 5px;
 }
 
@@ -78,14 +77,19 @@ button,
     position: relative;
 }
 
-#chat-messages .messages-wrapper {
+#chat-messages #messages-wrapper {
+    max-height: 200px;
     position: absolute;
-    max-height: 400px;
     bottom: 0;
+}
+
+#chat-messages .message {
+    margin: 15px;
 }
 
 
 /* Chat box */
+
 #chat-box input {
     border: 0;
     border-top: 1px solid hsl(0, 0%, 90%);

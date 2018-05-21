@@ -279,12 +279,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    * Handle focus of window
    */
   angular.element(window).on("load resize", function () {
-    angular.element("#chat-wrapper").height(
-      window.innerHeight - 120
-    );
-    angular.element("#chat-messages").height(
-      window.innerHeight - 245
-    );
+    var height = window.innerHeight - 260;
+    angular.element("#chat-messages").height(height);
+    angular.element("#messages-wrapper").css("max-height", angular.element("#chat-messages").height());
   });
 
   /**
