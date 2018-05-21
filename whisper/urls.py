@@ -6,7 +6,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('chat.urls', namespace='chat')),
+    url(r'', include('chat.urls', namespace='chat')),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
