@@ -233,13 +233,8 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    */
   vm.notify = function (message) {
 
-    // Check focus
-    if (vm.isFocused) {
-      return;
-    }
-
-    // Check undefined
-    if (typeof message === "undefined") {
+    // Check focus and message
+    if (vm.isFocused || typeof message === "undefined") {
       return;
     }
 
