@@ -57,4 +57,3 @@ async def test_chat_consumer() -> None:
     response = await communicator.receive_json_from()
     assert response == {'leave': str(room.id)}
     assert communicator.instance.rooms == set()
-
