@@ -1,6 +1,11 @@
 Whisper
 =======
 
+.. image:: https://travis-ci.org/SavandBros/whisper.svg?branch=master
+    :target: https://travis-ci.org/SavandBros/whisper
+.. image:: https://codecov.io/gh/SavandBros/whisper/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/SavandBros/whisper
+
 Basic example of a multi-room chatroom, with messages from all rooms a user
 is in multiplexed over a single WebSocket connection.
 
@@ -105,31 +110,86 @@ functions for those (e.g. ``chat_join``), which it uses to encode the events
 down into the WebSocket wire format before sending them to the client.
 
 
-Suggested Exercises
--------------------
 
-If you want to try out making some changes and getting a feel for Channels,
-here's some ideas and hints on how to do them:
+Continuous Integration
+-----------------------
 
-* Make messages from yourself have a different message type. You'll need to
-  edit the ``chat_message`` function to send a different packet down to the
-  client based on if the ``chat.message`` event it gets is from you or not.
+Like other products or projects of Savand Bros, Whisper uses multiple CI to preform:
 
-* Add message persistence. There's already a message sent to make a user join
-  a room, so you can use that to send some previous messages; you'll need to make
-  a model to save messages in, though.
+* Running Tests Suite.
+* Running Code Quality Standards.
 
-* Make the Room list dynamically change as rooms are added and removed.
-  You could add a common group that every socket joins and send events to it
-  as rooms are created/deleted.
+In case of failure of any the validations checks above, the build will fail
+and no deployment will happen.
 
-* Add message editing and deletion. You'll need to have made them persistent
-  first; make sure you send message IDs down with every message so the client can
-  keep track of them. Then, write some code to handle editing and trigger
-  sending new messages down when this happens with the message ID it's happening to.
+Our pull request & code review flow is also heavily depends on those factors.
+
+Before pushing your code for review, be sure to run the following commands
+to perform those validations against your local code changes.
+
+::
+
+  fab test cq
 
 
-Further Reading
----------------
+Branching
+=========
 
-You can find the Channels documentation at http://channels.readthedocs.org
+Features: Any new work should be branched out from "master" branch and must
+be merged back into the "master" branch.
+
+Hot fixes: Fixes should be branched out from "production" branch and must be
+merged back into "master" and "production".
+
+
+Branches
+--------
+
+Branch **production**, should be last and stable working code that is on
+Production servers. All the pull requests (from Master branch) should
+pass the code checks, including and not limited to:
+
+* Test Coverage
+* Unit Tess Status
+* Build Status
+* Reviewers Approval
+
+Branch **master**, should contains the latest development work and should
+be on staging. All the pull requests (from developers) should pass the code
+checks, including and not limited to:
+
+* Test Coverage
+* Unit Tess Status
+* Build Status
+* Reviewers Approval
+
+
+Deployment
+----------
+
+Deployment happens automatically via the CI.
+
+Latest code on **master** branch will be deployed to the staging, while
+branch **production** will be deployed to production server.
+
+
+Release
+-------
+
+To release a new version or have the latest changes on the production:
+
+* Make a new Pull Request from branch **master** to **production**.
+* The pull request should pass (not limited to):
+    * Test Coverage
+    * Unit Tess Status
+    * Build Status
+    * Reviewers Approval
+
+After merging the pull request into **production**, the CI will build and
+deploy the latest code from production branch to the Production server.
+
+
+Licensing
+---------
+
+Whisper is licensed and distributed under GPLv3.

@@ -5,10 +5,11 @@ from channels.db import database_sync_to_async
 # For more, see http://channels.readthedocs.io/en/latest/topics/databases.html
 from chat.exceptions import ClientError
 from chat.models import Room
+from users.models import User
 
 
 @database_sync_to_async
-def get_room_or_error(room_id, user):
+def get_room_or_error(room_id: int, user: User):
     """
     Tries to fetch a room for the user, checking permissions along the way.
     """
