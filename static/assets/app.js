@@ -125,7 +125,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       console.log("New socket message", data);
 
       // Add to room messages
-      if (vm.room) {
+      if (vm.room && data.room == vm.room.id) {
         vm.room.messages.push(new Message(data));
       }
 
