@@ -45,7 +45,8 @@
 
     <div class="chat-wrapper">
       <form ng-submit="index.message(index.chatForm.message)">
-        <input type="text" placeholder="Messsage" ng-model="index.chatForm.message" class="form-control" id="focus"/>
+        <input type="text" placeholder="Messsage" class="form-control"
+          id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
       </form>
     </div>
 
