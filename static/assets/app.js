@@ -49,24 +49,24 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
 
   var vm = this;
 
-  /**
-   * @type {number}
-   */
-  vm.currentRoom = 0;
-
-  /**
-   * @type {Array<object>}
-   */
-  vm.chatForm = {
-    message: "",
-  };
-
-  /**
-   * @type {Array<object>}
-   */
-  vm.messages = [];
-
   vm.constructor = function () {
+
+    /**
+     * @type {number}
+     */
+    vm.currentRoom = 0;
+
+    /**
+     * @type {Array<object>}
+     */
+    vm.chatForm = {
+      message: "",
+    };
+
+    /**
+     * @type {Array<object>}
+     */
+    vm.messages = [];
 
     /**
      * Check notification permission
