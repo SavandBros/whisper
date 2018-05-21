@@ -104,10 +104,8 @@ def coverage() -> None:
     if os.path.isfile(COVERAGE_REPORT_FILE):
         os.remove(COVERAGE_REPORT_FILE)
 
-    initialize_db()
-    local("coverage run --source='.' manage.py {0}".format(get_test_command(
-        parallel=False, fake_migrations=False
-    )))
+    # initialize_db()
+    local("coverage run --source='.' -m py.test -v")
 
     local("coverage report --skip-covered")
     local("coverage html")
