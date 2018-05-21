@@ -166,6 +166,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     vm.socket.onclose = function () {
       console.log("Disconnected from chat socket");
     };
+
+    /**
+     * Focus on chat input
+     */
+    angular.element("#focus").focus();
   };
 
   /**
