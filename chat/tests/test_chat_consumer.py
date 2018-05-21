@@ -14,14 +14,21 @@ def create_room() -> Room:
 
 
 @database_sync_to_async
-def create_user() -> User:
-    return User.objects.create_user(email='ali@email.com', username='alireza', password='somepassword', is_staff=True)
+def create_user(email: str, username: str, name: str) -> User:
+    return User.objects.create_user(email=email, username=username, name=name, password='somepassword', is_staff=True)
+
+
+@database_sync_to_async
+def tear_down() -> None:
+    User.objects.filter().delete()
 
 
 @pytest.mark.django_db
 @pytest.mark.asyncio
 async def test_chat_consumer() -> None:
-    user = await create_user()
+    user: User = await create_user(email='ali@email.com', username='alireza', name='Alireza Savand')
+    user_2: User = await create_user(email='amir@email.com', username='amir', name='Amir Savand')
+
     room = await create_room()
     communicator = WebsocketCommunicator(ChatConsumer, "/testws/")
     communicator.scope['user'] = user
@@ -33,7 +40,6 @@ async def test_chat_consumer() -> None:
     # Joining a room that doesn't exists
     await communicator.send_json_to({"command": "join", "room": '5451'})
     response = await communicator.receive_json_from()
-    print(response)
     assert response == {'error': 'ROOM_INVALID'}
 
     # Test joining
@@ -52,8 +58,63 @@ async def test_chat_consumer() -> None:
                         'username': user.username,
                         'message': message}
 
-    # Testing Leaving the room
+    # Getting list of users in the room
+    await communicator.send_json_to({'command': 'room_users', 'room': room.id})
+    response = await communicator.receive_json_from()
+    assert response == {'data': {'users': {'1': {'name': 'Alireza Savand', 'username': 'alireza'}}},
+                        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id}
+
+    communicator_2 = WebsocketCommunicator(ChatConsumer, "/testws/")
+    communicator_2.scope['user'] = user_2
+    connected, _ = await communicator_2.connect()
+    assert connected
+
+    await communicator_2.send_json_to({"command": "join", "room": room.id})
+    response = await communicator_2.receive_json_from()
+    assert response == {'join': str(room.id), 'title': 'Savand Bros'}
+
+    response = await communicator.receive_json_from()
+    assert response == {'msg_type': settings.MSG_TYPE_ENTER, 'room': room.id, 'username': user_2.username}
+
+    assert communicator_2.instance.rooms == set(list([room.id, ]))
+
+    await communicator_2.send_json_to({'command': 'room_users', 'room': room.id})
+    response = await communicator_2.receive_json_from()
+    assert response == {
+        'data': {
+            'users': {
+                '1': {'username': user.username, 'name': user.name},
+                '2': {'username': user_2.username, 'name': user_2.name}
+            }
+        },
+        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
+    }
+
+    # User:Alireza gonna leave the room and Amir should be notified.
     await communicator.send_json_to({"command": "leave", "room": room.id})
     response = await communicator.receive_json_from()
     assert response == {'leave': str(room.id)}
     assert communicator.instance.rooms == set()
+
+    # Here User: Amir has been notified about Alireza leaving.
+    response = await communicator_2.receive_json_from()
+    assert response == {'msg_type': settings.MSG_TYPE_LEAVE, 'room': room.id, 'username': user.username}
+
+    # Let's get the users online the room now since Alireza has left us alone
+    await communicator_2.send_json_to({'command': 'room_users', 'room': room.id})
+    response = await communicator_2.receive_json_from()
+    assert response == {'data': {'users': {'2': {'username': user_2.username, 'name': user_2.name}}},
+                        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id}
+
+    # User: Amir is leaving the room
+    await communicator_2.send_json_to({"command": "leave", "room": room.id})
+    response = await communicator_2.receive_json_from()
+    assert response == {'leave': str(room.id)}
+    assert communicator_2.instance.rooms == set()
+
+    # Finally disconnecting
+    await communicator.disconnect()
+    await communicator_2.disconnect()
+
+    # Teardown
+    await tear_down()
