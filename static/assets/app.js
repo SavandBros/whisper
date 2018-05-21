@@ -247,7 +247,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     if (vm.isFocused && room && room.id == vm.room.id) {
       return;
     }
-    console.log(message.message);
+
     // Validate message
     if (typeof message.message === "undefined") {
       return;
