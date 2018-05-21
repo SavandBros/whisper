@@ -46,6 +46,6 @@ class TestChatViews(TestCase):
         print(resp.context['rooms_js'])
         self.assertEqual(
             resp.context['rooms_js'],
-            '[{"title": "my room", "staff_only": true, "group_name": "room-1"}, {"title": "second room",'
-            ' "staff_only": false, "group_name": "room-2"}]'
+            '[{"id": 1, "title": "my room", "staff_only": true, "group_name": "room-1"}, '
+            '{"id": 2, "title": "second room", "staff_only": false, "group_name": "room-2"}]'
         )

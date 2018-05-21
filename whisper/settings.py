@@ -61,7 +61,12 @@ MESSAGE_TYPES_LIST = [
 # SECURITY WARNING: keep the secret key used in production secret! And don't use debug=True in production!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'imasecret')
 DEBUG = os.environ.get('DJANGO_DEBUG', '')
-ALLOWED_HOSTS = ["192.168.56.1", 'savandbros-whisper.herokuapp.com', 'whisper.savandbros.com', ]
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '192.168.56.1',
+    'savandbros-whisper.herokuapp.com',
+    'whisper.savandbros.com',
+]
 
 # Application definition
 INSTALLED_APPS = [

@@ -21,6 +21,7 @@ def index(request: HttpRequest):
 
     for room in rooms:
         rooms_js.append({
+            'id': room.id,
             'title': room.title,
             'staff_only': room.staff_only,
             'group_name': room.group_name,
