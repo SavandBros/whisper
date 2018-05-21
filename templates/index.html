@@ -4,7 +4,7 @@
 
 {% block content %}
 
-  <div class="container mt-5" ng-controller="IndexController as index">
+  <div class="container border py-3 mt-5 bg-light" ng-controller="IndexController as index">
 
     <div class="nav nav-pills">
       {% for room in rooms %}
@@ -20,7 +20,26 @@
 
     <hr>
 
-    <div id="chats">
+    <!-- Messages -->
+    <p ng-repeat="message in index.messages">
+
+      <!-- Announce -->
+      <em ng-if="message.msg_type == 5 || message.msg_type == 4" class="text-secondary">
+        [[ message.username ]] [[ message.msg_type == 4 ? "joined" : "left" ]] the chatroom.
+      </em>
+
+      <!-- Message -->
+      <span ng-if="message.message">
+        <b>[[ message.username ]]:</b> [[ message.message ]]
+      </span>
+    </p>
+
+    <hr>
+
+    <div class="chat-wrapper">
+      <form ng-submit="index.message(index.chatForm.message)">
+        <input type="text" placeholder="Messsage" ng-model="index.chatForm.message" class="form-control"/>
+      </form>
     </div>
 
   </div>

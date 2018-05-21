@@ -55,6 +55,13 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
   vm.currentRoom = 0;
 
   /**
+   * @type {{message: string}}
+   */
+  vm.chatForm = {
+    message: "",
+  };
+
+  /**
    * @type {Array<objecy>}
    */
   vm.messages = [];
@@ -74,13 +81,14 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
     vm.ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
-    
+
     /**
      * On socket message
      */
     vm.socket.onmessage = function (message) {
       var data = JSON.parse(message.data);
-      vm.messages.shift(data);
+      console.log("New socket message", data);
+      vm.messages.push(data);
       $scope.$apply();
 
       if (data.error) {
@@ -147,13 +155,22 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
    *
    * @param {string} message
    */
-  vm.message = function (message) {
+  vm.message = function () {
+
+    // Validate message
+    if (!vm.chatForm.message.length) {
+      return;
+    }
+
+    // Send message
     vm.socket.send(JSON.stringify({
       "command": "send",
       "room": vm.currentRoom,
-      "message": message
+      "message": vm.chatForm.message
     }));
-    message = "";
+
+    // Clear message input
+    vm.chatForm.message = "";
   }
 
   /**
