@@ -1,10 +1,12 @@
+from typing import Set
+
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
-from typing import Set
 
 from chat.exceptions import ClientError
 from chat.models import Room
-from chat.utils import get_room_or_error
+from chat.utils import get_room_or_error, cache_or_update_room_presence, get_presence_users, remove_user_from_presence
+from users.models import User
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
@@ -46,6 +48,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 await self.leave_room(content["room"])
             elif command == "send":
                 await self.send_room(content["room"], content["message"])
+            elif command == "room_users":
+                await self.room_users(content['room'])
         except ClientError as e:
             # Catch any errors and send it back
             await self.send_json({"error": e.code})
@@ -63,7 +67,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def join_room(self, room_id: int):
         """Called by receive_json when someone sent a join command."""
         # The logged-in user is in our scope thanks to the authentication ASGI middleware
-        room: Room = await get_room_or_error(room_id, self.scope["user"])
+        user: User = self.scope['user']
+        room: Room = await get_room_or_error(room_id, user)
         # Send a join message if it's turned on
         if settings.NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
             await self.channel_layer.group_send(
@@ -71,11 +76,12 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 {
                     "type": "chat.join",
                     "room_id": room_id,
-                    "username": self.scope["user"].username,
+                    "username": user.username,
                 }
             )
         # Store that we're in the room
         self.rooms.add(room_id)
+        await cache_or_update_room_presence(room_id, user)
         # Add them to the group so they get room messages
         await self.channel_layer.group_add(
             room.group_name,
@@ -90,7 +96,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def leave_room(self, room_id: int):
         """Called by receive_json when someone sent a leave command."""
         # The logged-in user is in our scope thanks to the authentication ASGI middleware
-        room: Room = await get_room_or_error(room_id, self.scope["user"])
+        user: User = self.scope['user']
+        room: Room = await get_room_or_error(room_id, user)
         # Send a leave message if it's turned on
         if settings.NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
             await self.channel_layer.group_send(
@@ -98,11 +105,13 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 {
                     "type": "chat.leave",
                     "room_id": room_id,
-                    "username": self.scope["user"].username,
+                    "username": user.username,
                 }
             )
         # Remove that we're in the room
         self.rooms.discard(room_id)
+        await remove_user_from_presence(room_id, user.id)
+
         # Remove them from the group so they no longer get room messages
         await self.channel_layer.group_discard(
             room.group_name,
@@ -129,6 +138,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "message": message,
             }
         )
+
+    async def room_users(self, room_id: int) -> None:
+        """Called when asking for list of the online users in the room."""
+        await self.send_json({
+            'type': settings.MSG_TYPE_INTERNAL,
+            'room': room_id,
+            'data': {'users': await get_presence_users(room_id)}
+        })
 
     # Handlers for messages sent over the channel layer
 
