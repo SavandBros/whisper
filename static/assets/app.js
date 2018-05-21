@@ -97,6 +97,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     vm.room = null;
 
     /**
+     * @type {boolean}
+     */
+    vm.isFocused = true;
+
+    /**
      * Get rooms
      */
     angular.forEach(VIEW.ROOMS, function (room) {
@@ -166,11 +171,6 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     vm.socket.onclose = function () {
       console.log("Disconnected from chat socket");
     };
-
-    /**
-     * Focus on chat input
-     */
-    angular.element("#focus").focus();
   };
 
   /**
@@ -188,7 +188,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       return;
     }
 
-    // Is in this room, leave
+    // Is in this room, do nothing
     if (vm.room.id == room.id) {
       vm.room = null;
       vm.socket.send(JSON.stringify({
@@ -233,6 +233,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    */
   vm.notify = function (message) {
 
+    // Check focus
+    if (vm.isFocused) {
+      return;
+    }
+
     // Check undefined
     if (typeof message === "undefined") {
       return;
@@ -269,6 +274,21 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
   vm.inRoom = function (roomId) {
     return $("#room-" + roomId).length > 0;
   };
+
+  /**
+   * Handle focus of window
+   */
+  angular.element(window).on("load focus", function () {
+    angular.element("#focus").focus();
+    vm.isFocused = true;
+  });
+
+  /**
+   * Handle losing focus of window
+   */
+  angular.element(window).on("blur", function () {
+    vm.isFocused = false;
+  });
 
   vm.constructor();
 });
