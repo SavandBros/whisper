@@ -27,7 +27,7 @@
     <hr>
 
     <!-- Messages -->
-    <p ng-repeat="message in index.getCurrentRoom().messages" ng-if="index.getCurrentRoom()">
+    <p ng-repeat="message in index.room.messages" ng-if="index.room">
 
       <!-- Announce -->
       <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
