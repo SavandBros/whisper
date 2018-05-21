@@ -28,6 +28,18 @@ app.constant("UTILS", {
 });
 
 /**
+ * Room class
+ */
+app.service("Room", function () {
+  return function (data) {
+    var self = this;
+    self.id = data.id;
+    self.title = data.title;
+    self.messages = [];
+  };
+});
+
+/**
  * Main controller
  */
 app.controller("MainController", function () {
@@ -45,7 +57,7 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING, $scope) {
+app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, $scope) {
 
   var vm = this;
 
@@ -70,6 +82,18 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
      * @type {Array<object>}
      */
     vm.messages = [];
+
+    /**
+     * @type {Array<Room>}
+     */
+    vm.rooms = [];
+
+    /**
+     * Get rooms
+     */
+    angular.forEach(VIEW.ROOMS, function (room) {
+      vm.rooms.push(new Room(room));
+    });
 
     /**
      * Check notification permission

@@ -2,15 +2,23 @@
 
 {% block title %}Whisper{% endblock %}
 
+{% block extra_head %}
+  <script>
+    app.constant("VIEW", {
+      ROOMS: JSON.parse('{{ rooms_js | safe }}')
+    });
+  </script>
+{% endblock %}
+
 {% block content %}
 
   <div class="container border py-3 mt-5 bg-light" ng-controller="IndexController as index">
 
     <div class="nav nav-pills">
-      <li class="nav-item" ng-repeat="room in {{ rooms_js }}">
+      <li class="nav-item" ng-repeat="room in index.rooms">
         <a ng-href="#[[ room.id ]]" class="nav-link mr-2"
-            ng-class="{active: index.currentRoom == room.id}"
-            ng-click="index.openRoom(room.id)">
+          ng-class="{active: index.currentRoom == room.id}"
+          ng-click="index.openRoom(room.id)">
           [[ room.title ]]
         </a>
       </li>
