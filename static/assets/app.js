@@ -55,7 +55,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
   vm.currentRoom = 0;
 
   /**
-   * @type {{message: string}}
+   * @type {Array<object>}
    */
   vm.chatForm = {
     message: "",
@@ -158,7 +158,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
     // In another room, leave that one and join again
     vm.openRoom(vm.currentRoom);
     vm.openRoom(roomId);
-  }
+  };
 
   /**
    * Send a message to current room
@@ -181,7 +181,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
 
     // Clear message input
     vm.chatForm.message = "";
-  }
+  };
 
   /**
    * Create and handle notification
@@ -210,7 +210,7 @@ app.controller("IndexController", function (UTILS, SETTING, $scope) {
         }
       });
     }
-  }
+  };
 
   /**
    * Says if we joined a room or not by if there's a div for it
