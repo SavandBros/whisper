@@ -1,12 +1,13 @@
-from test_plus.test import TestCase
+from django.test import TestCase
 
 from users.admin import MyUserCreationForm
+from users.models import User
 
 
 class TestMyUserCreationForm(TestCase):
 
     def setUp(self):
-        self.user = self.make_user('notalamode', 'notalamodespassword')
+        self.user = User.objects.create_user(username='notalamode', password='notalamodespassword')
 
     def test_clean_username_success(self):
         # Instantiate the form with a new username
