@@ -136,18 +136,31 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     /**
      * On socket message
      */
-    vm.socket.onmessage = function (message) {
-      var data = JSON.parse(message.data);
+    vm.socket.onmessage = function (messageData) {
+      var data = JSON.parse(messageData.data);
+      var message = new Message(data);
+      var room = data.room == vm.room.id ? vm.room : null;
+      var fromUser = data.username === SETTING.USER.USERNAME;
+
+      // Not from this room, find the room
+      if (!room) {
+        for (var i in vm.rooms) {
+          if (vm.rooms[i].id === data.room) {
+            room = vm.rooms[i];
+          }
+        }
+      }
+
       console.log("New socket message", data);
 
       // Add to room messages
-      if (vm.room && data.room == vm.room.id) {
-        vm.room.messages.push(new Message(data));
+      if (room) {
+        room.messages.push(message);
       }
 
       // Notify
-      if (data.username !== SETTING.USER.USERNAME) {
-        vm.notify(data.message);
+      if (!fromUser) {
+        vm.notify(room, message);
       }
 
       // Handle error
@@ -225,12 +238,18 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
   /**
    * Create and handle notification
    *
+   * @param {Room} room
    * @param {string} message
    */
-  vm.notify = function (message) {
+  vm.notify = function (room, message) {
 
-    // Check focus and message
-    if (vm.isFocused || typeof message === "undefined") {
+    // Don't notify if focused on window and is in the same room
+    if (vm.isFocused && room && room.id == vm.room.id) {
+      return;
+    }
+    console.log(message.message);
+    // Validate message
+    if (typeof message.message === "undefined") {
       return;
     }
 
@@ -242,7 +261,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     // Let's check whether notification permissions have already been granted
     else if (Notification.permission === "granted") {
       // If it's okay let's create a notification
-      var notification = new Notification(message);
+      var notification = new Notification(message.message);
     }
 
     // Otherwise, we need to ask the user for permission
@@ -250,7 +269,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       Notification.requestPermission(function (permission) {
         // If the user accepts, let's create a notification
         if (permission === "granted") {
-          var notification = new Notification(message);
+          var notification = new Notification(message.message);
         }
       });
     }
