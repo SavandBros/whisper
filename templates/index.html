@@ -12,44 +12,43 @@
 
 {% block content %}
 
-  <div class="container border py-3 mt-5 bg-light" ng-controller="IndexController as index">
+  <!-- Container -->
+  <div class="container" ng-controller="IndexController as index">
 
-    <!-- Rooms -->
-    <div class="nav nav-pills">
-      <li class="nav-item" ng-repeat="room in index.rooms">
-        <a ng-href="#[[ $index ]]" class="nav-link mr-2"
-          ng-class="{active: index.room.id == room.id}"
-          ng-click="index.openRoom(room)">
-          [[ room.title ]]
-        </a>
-      </li>
-    </div>
-
-    <hr>
-
-    <!-- Messages -->
-    <p ng-repeat="message in index.room.messages" ng-if="index.room">
-
-      <!-- Announce -->
-      <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
-        [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
-      </em>
-
-      <!-- Message -->
-      <span ng-if="message.message">
-        <b>[[ message.username ]]:</b> [[ message.message ]]
-      </span>
-    </p>
-
-    <hr>
-
+    <!-- Chat wrapper -->
     <div class="chat-wrapper">
+
+      <!-- Rooms -->
+      <div class="nav nav-pills" nosel>
+        <li class="nav-item" ng-repeat="room in index.rooms">
+          <a ng-href="#[[ $index ]]" class="nav-link mr-2"
+            ng-class="{active: index.room.id == room.id}"
+            ng-click="index.openRoom(room)">
+            [[ room.title ]]
+          </a>
+        </li>
+      </div>
+      <hr>
+
+      <!-- Messages -->
+      <p ng-repeat="message in index.room.messages" ng-if="index.room">
+        <!-- Announce -->
+        <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
+          [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
+        </em>
+        <!-- Message -->
+        <span ng-if="message.message">
+          <b>[[ message.username ]]:</b> [[ message.message ]]
+        </span>
+      </p>
+      <hr>
+
+      <!-- Message box -->
       <form ng-submit="index.message(index.chatForm.message)">
         <input type="text" placeholder="Messsage" class="form-control"
           id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
       </form>
     </div>
-
   </div>
 
 {% endblock %}
