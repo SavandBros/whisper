@@ -16,38 +16,42 @@
   <div class="container" ng-controller="IndexController as index">
 
     <!-- Chat wrapper -->
-    <div class="chat-wrapper">
+    <div id="chat-wrapper">
 
       <!-- Rooms -->
-      <div class="nav nav-pills" nosel>
+      <div id="chat-rooms" class="nav nav-pills" nosel>
         <li class="nav-item" ng-repeat="room in index.rooms">
-          <a ng-href="#[[ $index ]]" class="nav-link mr-2"
+          <a class="nav-link" ng-href="#[[ $index ]]"
             ng-class="{active: index.room.id == room.id}"
             ng-click="index.openRoom(room)">
             [[ room.title ]]
           </a>
         </li>
       </div>
-      <hr>
 
       <!-- Messages -->
-      <p ng-repeat="message in index.room.messages" ng-if="index.room">
-        <!-- Announce -->
-        <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
-          [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
-        </em>
-        <!-- Message -->
-        <span ng-if="message.message">
-          <b>[[ message.username ]]:</b> [[ message.message ]]
-        </span>
-      </p>
-      <hr>
+      <div id="chat-messages">
+        <div class="messages-wrapper">
+          <div class="message" ng-repeat="message in index.room.messages" ng-if="index.room">
+            <!-- Announce -->
+            <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
+              [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
+            </em>
+            <!-- Normal message -->
+            <span ng-if="message.message">
+              <b>[[ message.username ]]:</b> [[ message.message ]]
+            </span>
+          </div>
+        </div>
+      </div>
 
       <!-- Message box -->
-      <form ng-submit="index.message(index.chatForm.message)">
-        <input type="text" placeholder="Messsage" class="form-control"
-          id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
-      </form>
+      <div id="chat-box">
+        <form ng-submit="index.message(index.chatForm.message)">
+          <input type="text" placeholder="Messsage" class="form-control"
+            id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
+        </form>
+      </div>
     </div>
   </div>
 

@@ -278,6 +278,18 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
   /**
    * Handle focus of window
    */
+  angular.element(window).on("load resize", function () {
+    angular.element("#chat-wrapper").height(
+      window.innerHeight - 120
+    );
+    angular.element("#chat-messages").height(
+      window.innerHeight - 245
+    );
+  });
+
+  /**
+   * Handle focus of window and chat input
+   */
   angular.element(window).on("load focus", function () {
     angular.element("#focus").focus();
     vm.isFocused = true;
