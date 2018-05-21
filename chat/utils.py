@@ -40,7 +40,8 @@ def cache_or_update_room_presence(room_id: int, user: User) -> None:
     if not room_cached:
         cache.set(cache_key, user_data)
     else:
-        cache.set(cache_key, room_cached.update(user_data))
+        room_cached.update(user_data)
+        cache.set(cache_key, room_cached)
 
 
 @database_sync_to_async
@@ -52,9 +53,13 @@ def get_presence_users(room_id: int) -> Dict[int, Dict[str, str]]:
 @database_sync_to_async
 def remove_user_from_presence(room_id: int, user_id: int) -> None:
     """Remove user from the room presence."""
-    room_cached = cache.get(get_room_presence_cache_key(room_id))
+    cache_key = get_room_presence_cache_key(room_id)
+    room_cached = cache.get(cache_key)
+
     if room_cached:
         room_cached.pop(user_id)
+
+    cache.set(cache_key, room_cached)
 
 
 def get_room_presence_cache_key(room_id: int) -> str:
