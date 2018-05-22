@@ -159,6 +159,10 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       // Add to room messages
       if (room) {
         room.messages.push(message);
+
+        // Scroll to bottom
+        var wrapper = angular.element("#chat-messages");
+        wrapper.stop().animate({ scrollTop: wrapper.prop("scrollHeight") });
       }
 
       // Notify
