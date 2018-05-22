@@ -53,12 +53,15 @@ app.service("Room", function () {
 /**
  * Message class
  */
-app.service("Message", function () {
+app.service("Message", function (SETTING) {
   return function (data) {
     var self = this;
     self.message = data.message;
     self.username = data.username;
     self.kind = data.msg_type;
+    self.isOwn = function () {
+      return self.username === SETTING.USER.USERNAME;
+    };
   };
 });
 
@@ -279,7 +282,10 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    * Handle focus of window
    */
   angular.element(window).on("load resize", function () {
-    var height = window.innerHeight - 260;
+    var height = window.innerHeight - 250;
+    if (window.innerWidth <= 991) {
+      height += 60;
+    }
     angular.element("#chat-messages").height(height);
     angular.element("#messages-wrapper").css("max-height", angular.element("#chat-messages").height());
   });

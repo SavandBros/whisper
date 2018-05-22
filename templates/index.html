@@ -13,7 +13,7 @@
 {% block content %}
 
   <!-- Container -->
-  <div class="container" ng-controller="IndexController as index">
+  <div id="chat-container" class="container" ng-controller="IndexController as index">
 
     <!-- Chat wrapper -->
     <div id="chat-wrapper">
@@ -32,14 +32,15 @@
       <!-- Messages -->
       <div id="chat-messages">
         <div id="messages-wrapper">
-          <div class="message" ng-repeat="message in index.room.messages" ng-if="index.room">
+          <div class="message" ng-repeat="message in index.room.messages"
+            ng-if="index.room" ng-class="{own: message.isOwn()}">
             <!-- Announce -->
             <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
               [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
             </em>
             <!-- Normal message -->
             <span ng-if="message.message">
-              <b>[[ message.username ]]:</b> [[ message.message ]]
+              <span class="user">[[ message.username ]]</span>[[ message.message ]]
             </span>
           </div>
         </div>
