@@ -122,15 +122,28 @@ button,
 
 #chat-messages .message {
     margin: 5px 15px;
-    background: white;
     padding: 5px 10px;
     display: block;
+    word-break: break-all;
     width: fit-content;
-    max-width: 80%;
     clear: both;
+    max-width: 80%;
+}
+
+#chat-messages .message:not(.announce) {
     border-radius: 0 8px 8px 8px;
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.07);
-    word-break: break-all;
+    background: white;
+}
+
+#chat-messages .message.announce {
+    width: 100%;
+    max-width: 100%;
+    text-align: center;
+    color: #000;
+    opacity: 0.4;
+    margin: 0;
+    padding: 2px 0;
 }
 
 #chat-messages .message:first-of-type {

@@ -33,11 +33,11 @@
       <div id="chat-messages">
         <div id="messages-wrapper">
           <div class="message" ng-repeat="message in index.room.messages"
-            ng-if="index.room" ng-class="{own: message.isOwn()}">
+            ng-if="index.room" ng-class="{own: message.isOwn(), announce: !message.message}">
             <!-- Announce -->
-            <em ng-if="message.kind == 5 || message.kind == 4" class="text-secondary">
+            <span ng-if="!message.message">
               [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
-            </em>
+            </span>
             <!-- Normal message -->
             <span ng-if="message.message">
               <span class="user">[[ message.username ]]</span>[[ message.message ]]
