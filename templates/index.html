@@ -19,15 +19,20 @@
     <div id="chat-wrapper">
 
       <!-- Rooms -->
-      <div id="chat-rooms" class="nav nav-pills" nosel>
-        <li class="nav-item" ng-repeat="room in index.rooms">
-          <a class="nav-link" ng-href="#[[ $index ]]"
-            ng-class="{active: index.room.id == room.id}"
-            ng-click="index.openRoom(room)">
-            [[ room.title ]]
-          </a>
-        </li>
-      </div>
+      <nav class="navbar navbar-light bg-light navbar-expand" nosel>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="rooms" data-toggle="dropdown">[[ index.room.title || "Room" ]]</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" ng-href="#[[ $index ]]" ng-class="{active: index.room.id == room.id}"
+                ng-repeat="room in index.rooms" ng-click="index.openRoom(room)">
+                [[ room.title ]]
+              </a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
 
       <!-- Messages -->
       <div id="chat-messages">
