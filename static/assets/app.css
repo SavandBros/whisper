@@ -4,22 +4,12 @@ body {
     font-family: "Ropa Sans", sans-serif;
     /* background: linear-gradient(to bottom, #94c5f8 1%, #a6e6ff 70%, #b1b5ea 100%); */
     background: linear-gradient(to bottom, #154277 0%, #576e71 30%, #e1c45e 70%, #b26339 100%);
-}
-
-body,
-p,
-a,
-button,
-.form-control {
-    font-size: 18px;
+    padding-top: 60px;
 }
 
 a,
-button,
-[ui-sref],
-[ng-click] {
+button {
     cursor: pointer;
-    text-decoration: none !important;
 }
 
 [nosel] {
