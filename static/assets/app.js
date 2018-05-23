@@ -286,9 +286,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
    * Handle focus of window
    */
   angular.element(window).on("load resize", function () {
-    var height = window.innerHeight - 250;
+    var height = window.innerHeight - 234;
     if (window.innerWidth <= 991) {
-      height += 60;
+      height += 120;
     }
     angular.element("#chat-messages").height(height);
     angular.element("#messages-wrapper").css("max-height", angular.element("#chat-messages").height());

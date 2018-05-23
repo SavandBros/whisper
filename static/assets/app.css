@@ -24,12 +24,18 @@ button {
 
 /* Navbar */
 
-.navbar {
-    height: 60px;
-}
-
 .navbar-brand {
     font-weight: bold;
+    font-size: 1.37rem;
+}
+
+@media (max-width: 991px) {
+    body {
+        padding-top: 0;
+    }
+    .navbar.fixed-top {
+        display: none;
+    }
 }
 
 
