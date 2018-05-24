@@ -33,7 +33,7 @@
 
   {% block extra_head %}{% endblock %}
 </head>
-<body ng-app="whisper" ng-controller="MainController as main">
+<body ng-app="whisper" ng-controller="MainController as main" id="{% block page %}{% endblock %}">
 
 <!-- Navbar -->
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
