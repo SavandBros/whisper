@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 
 {% block title %}Login{% endblock %}
-{% block header_text %}Login{% endblock %}
+{% block page %}login{% endblock %}
 
 {% block content %}
 
-    <form action="." method="POST">
-        {{ form }}
-        {% csrf_token %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="." method="POST">
+        {{ form }} {% csrf_token %}
         <button>Login</button>
-    </form>
+      </form>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
