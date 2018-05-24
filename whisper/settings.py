@@ -58,6 +58,8 @@ MESSAGE_TYPES_LIST = [
     MSG_TYPE_INTERNAL
 ]
 
+ROOM_PRESENCE_TIMEOUT: int = 3600  # 1 hours
+
 ##### Normal Django settings
 
 # SECURITY WARNING: keep the secret key used in production secret! And don't use debug=True in production!

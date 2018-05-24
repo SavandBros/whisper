@@ -2,6 +2,7 @@ import pytest
 from channels.db import database_sync_to_async
 from channels.testing import WebsocketCommunicator
 from django.conf import settings
+from django.test.utils import freeze_time
 
 from chat.consumers import ChatConsumer
 from chat.models import Room
@@ -61,8 +62,21 @@ async def test_chat_consumer() -> None:
     # Getting list of users in the room
     await communicator.send_json_to({'command': 'room_users', 'room': room.id})
     response = await communicator.receive_json_from()
-    assert response == {'data': {'users': {'1': {'name': 'Alireza Savand', 'username': 'alireza'}}},
-                        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id}
+    last_update: float = response['data']['users']['1']['last_update']
+    assert isinstance(last_update, float)
+    assert response == {
+        'data': {
+            'users': {
+                '1': {
+                    'name': 'Alireza Savand',
+                    'username': 'alireza',
+                    'left': False,
+                    'last_update': last_update
+                }
+            }
+        },
+        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
+    }
 
     communicator_2 = WebsocketCommunicator(ChatConsumer, "/testws/")
     communicator_2.scope['user'] = user_2
@@ -80,11 +94,17 @@ async def test_chat_consumer() -> None:
 
     await communicator_2.send_json_to({'command': 'room_users', 'room': room.id})
     response = await communicator_2.receive_json_from()
+
+    last_update_1: float = response['data']['users']['1']['last_update']
+    last_update_2: float = response['data']['users']['2']['last_update']
+
+    assert isinstance(last_update_1, float)
+    assert isinstance(last_update_2, float)
     assert response == {
         'data': {
             'users': {
-                '1': {'username': user.username, 'name': user.name},
-                '2': {'username': user_2.username, 'name': user_2.name}
+                '1': {'username': user.username, 'name': user.name, 'left': False, 'last_update': last_update_1},
+                '2': {'username': user_2.username, 'name': user_2.name, 'left': False, 'last_update': last_update_2}
             }
         },
         'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
@@ -103,8 +123,17 @@ async def test_chat_consumer() -> None:
     # Let's get the users online the room now since Alireza has left us alone
     await communicator_2.send_json_to({'command': 'room_users', 'room': room.id})
     response = await communicator_2.receive_json_from()
-    assert response == {'data': {'users': {'2': {'username': user_2.username, 'name': user_2.name}}},
-                        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id}
+    last_update_1: float = response['data']['users']['1']['last_update']
+    last_update_2: float = response['data']['users']['2']['last_update']
+    assert response == {
+        'data': {
+            'users': {
+                '1': {'username': user.username, 'name': user.name, 'left': True, 'last_update': last_update_1},
+                '2': {'username': user_2.username, 'name': user_2.name, 'left': False, 'last_update': last_update_2}
+            }
+        },
+        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
+    }
 
     # User: Amir is leaving the room
     await communicator_2.send_json_to({"command": "leave", "room": room.id})
