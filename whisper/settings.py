@@ -7,7 +7,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = environ.Env()
-TESTING: bool = sys.argv[1:2] == ['test']
+TESTING: bool = sys.argv[1:2] == ['test'] or 'test' in sys.argv[0]
 
 ##### Channels-specific settings
 # Channel layer definitions
@@ -36,6 +36,7 @@ MSG_TYPE_ALERT = 2  # For red & dangerous alerts
 MSG_TYPE_MUTED = 3  # For just OK information that doesn't bother users
 MSG_TYPE_ENTER = 4  # For just OK information that doesn't bother users
 MSG_TYPE_LEAVE = 5  # For just OK information that doesn't bother users
+MSG_TYPE_INTERNAL = 6  # For just ok information that should be between server-client
 
 MESSAGE_TYPES_CHOICES = (
     (MSG_TYPE_MESSAGE, 'MESSAGE'),
@@ -44,6 +45,7 @@ MESSAGE_TYPES_CHOICES = (
     (MSG_TYPE_MUTED, 'MUTED'),
     (MSG_TYPE_ENTER, 'ENTER'),
     (MSG_TYPE_LEAVE, 'LEAVE'),
+    (MSG_TYPE_INTERNAL, 'INTERNAL')
 )
 
 MESSAGE_TYPES_LIST = [
@@ -53,8 +55,10 @@ MESSAGE_TYPES_LIST = [
     MSG_TYPE_MUTED,
     MSG_TYPE_ENTER,
     MSG_TYPE_LEAVE,
+    MSG_TYPE_INTERNAL
 ]
 
+ROOM_PRESENCE_TIMEOUT: int = 3600  # 1 hours
 
 ##### Normal Django settings
 
@@ -166,6 +170,14 @@ if not TESTING:
             "KEY_PREFIX": "whisper"
         }
     }
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
+
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
