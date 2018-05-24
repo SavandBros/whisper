@@ -78,6 +78,33 @@ async def test_chat_consumer() -> None:
         'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
     }
 
+    # Testing Sending Message and getting last updated newer
+    message: str = 'Hello Alireza'
+    await communicator.send_json_to({"command": "send", "room": room.id, 'message': message})
+    response = await communicator.receive_json_from()
+    assert response == {'msg_type': settings.MSG_TYPE_MESSAGE,
+                        'room': room.id,
+                        'username': user.username,
+                        'message': message}
+
+    await communicator.send_json_to({'command': 'room_users', 'room': room.id})
+    response = await communicator.receive_json_from()
+    last_update_now: float = response['data']['users']['1']['last_update']
+    assert last_update_now > last_update
+    assert response == {
+        'data': {
+            'users': {
+                '1': {
+                    'name': 'Alireza Savand',
+                    'username': 'alireza',
+                    'left': False,
+                    'last_update': last_update_now
+                }
+            }
+        },
+        'type': settings.MSG_TYPE_INTERNAL, 'room': room.id
+    }
+
     communicator_2 = WebsocketCommunicator(ChatConsumer, "/testws/")
     communicator_2.scope['user'] = user_2
     connected, _ = await communicator_2.connect()

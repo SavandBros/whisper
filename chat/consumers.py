@@ -129,15 +129,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             raise ClientError("ROOM_ACCESS_DENIED")
         # Get the room and send to the group about it
         room: Room = await get_room_or_error(room_id, self.scope["user"])
+        user: User = self.scope['user']
         await self.channel_layer.group_send(
             room.group_name,
             {
                 "type": "chat.message",
                 "room_id": room_id,
-                "username": self.scope["user"].username,
+                "username": user.username,
                 "message": message,
             }
         )
+        await cache_or_update_room_presence(room_id, user)
 
     async def room_users(self, room_id: int) -> None:
         """Called when asking for list of the online users in the room."""
