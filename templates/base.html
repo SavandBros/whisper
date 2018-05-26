@@ -12,7 +12,7 @@
 
   <link rel="stylesheet" href="{% static "lib/bootstrap/bootstrap.css" %}?1"/>
   <link rel="stylesheet" href="{% static "assets/app.css" %}?1"/>
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Ropa+Sans">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:400,700">
 
   <script src="{% static "lib/jquery/jquery.js" %}"></script>
   <script src="{% static "lib/popper/popper.js" %}"></script>
@@ -36,7 +36,7 @@
 <body ng-app="whisper" ng-controller="MainController as main" id="{% block page %}{% endblock %}">
 
 <!-- Navbar -->
-<nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-expand-sm navbar-light bg-light">
   <div class="container">
 
     <!-- Brand -->
@@ -59,23 +59,18 @@
         <!-- Auth -->
         {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown">
-              <b>{{ user.username }}</b>
-            </a>
+            <!-- Username -->
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown">{{ user.username }}</a>
+            <!-- Dropdown -->
             <div class="dropdown-menu">
               <!-- Profile -->
-              <a class="dropdown-item" href="{% url "users:redirect" %}">
-                <i class="fas fa-fw fa-user-circle"></i> Profile
-              </a>
+              <a class="dropdown-item" href="{% url "users:redirect" %}">Profile</a>
               <!-- Settings -->
-              <a class="dropdown-item" href="{% url "users:update" %}">
-                <i class="fas fa-fw fa-cog"></i> Settings
-              </a>
-              <!-- Log out -->
+              <a class="dropdown-item" href="{% url "users:update" %}">Settings</a>
+              <!-- Line -->
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url "users:logout" %}">
-                <i class="fas fa-fw fa-sign-out-alt"></i> Logout
-              </a>
+              <!-- Log out -->
+              <a class="dropdown-item" href="{% url "users:logout" %}">Logout</a>
             </div>
           </li>
         {% endif %}
