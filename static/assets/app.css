@@ -9,6 +9,7 @@ body {
 a,
 button {
     cursor: pointer;
+    outline: 0 !important;
 }
 
 [nosel] {
