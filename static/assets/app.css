@@ -1,9 +1,8 @@
 /* Global */
 
 body {
-    font-family: "Ropa Sans", sans-serif;
-    /* background: linear-gradient(to bottom, #94c5f8 1%, #a6e6ff 70%, #b1b5ea 100%); */
-    background: linear-gradient(to bottom, #154277 0%, #576e71 30%, #e1c45e 70%, #b26339 100%);
+    font-family: "Fira Sans Extra Condensed", sans-serif;
+    background: whitesmoke;
     padding-top: 60px;
 }
 
@@ -19,6 +18,41 @@ button {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+
+/* Pages */
+
+body#index {
+    background: linear-gradient(to bottom, #154277 0%, #576e71 30%, #e1c45e 70%, #b26339 100%);
+}
+
+body#signup,
+body#login,
+body#verify {
+    background: #d4f3ff;
+}
+
+
+/* Form control */
+
+.form-control {
+    border-width: 0;
+    box-shadow: none !important;
+    border-bottom-width: 2px;
+    padding: 15px 0;
+}
+
+/* Card */
+
+.card, .card-header {
+    border: 0;
+}
+
+.card-header {
+    font-size: 1.5rem;
+    padding-top: 25px;
+    padding-bottom: 25px;
 }
 
 
