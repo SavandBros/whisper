@@ -161,6 +161,7 @@ EMAIL_SUBJECT_PREFIX = "[WHISPER] "
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -183,6 +184,8 @@ else:
             'LOCATION': 'unique-snowflake',
         }
     }
+    WHITENOISE_AUTOREFRESH = True
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
