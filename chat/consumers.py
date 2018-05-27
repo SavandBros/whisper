@@ -1,5 +1,6 @@
 from typing import Set
 
+import bleach
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 
@@ -182,6 +183,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "msg_type": settings.MSG_TYPE_MESSAGE,
                 "room": event["room_id"],
                 "username": event["username"],
-                "message": event["message"],
+                "message": bleach.linkify(event["message"]),
             },
         )
