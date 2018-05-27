@@ -59,6 +59,17 @@ async def test_chat_consumer() -> None:
                         'username': user.username,
                         'message': message}
 
+    # Testing message formatting
+    # First making urls into links
+    message: str = 'My website is gonevis.com'
+    expected_message: str = 'My website is <a href="http://gonevis.com" rel="nofollow">gonevis.com</a>'
+    await communicator.send_json_to({"command": "send", "room": room.id, 'message': message})
+    response = await communicator.receive_json_from()
+    assert response == {'msg_type': settings.MSG_TYPE_MESSAGE,
+                        'room': room.id,
+                        'username': user.username,
+                        'message': expected_message}
+
     # Getting list of users in the room
     await communicator.send_json_to({'command': 'room_users', 'room': room.id})
     response = await communicator.receive_json_from()

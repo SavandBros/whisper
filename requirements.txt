@@ -10,3 +10,4 @@ whitenoise==3.3.1
 Twisted[tls,http2]==18.4.0
 psycopg2-binary==2.7.4
 Fabric3==1.14.post1
+bleach==2.1.3
