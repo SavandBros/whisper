@@ -186,6 +186,7 @@ else:
     }
     WHITENOISE_AUTOREFRESH = True
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    PASSWORD_HASHERS = ['django.contrib.auth.hashers.UnsaltedMD5PasswordHasher']
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
