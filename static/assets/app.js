@@ -158,7 +158,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
 
       // Add to room messages
       if (room) {
-        room.messages.push(message);
+
+        // Don't add own normal messages (already added to prevent socket delay)
+        if (!message.isOwn() || message.kind !== UTILS.MESSAGE_TYPE.NORMAL) {
+          room.messages.push(message);
+        }
 
         // Scroll to bottom
         var wrapper = angular.element("#chat-messages");
@@ -236,6 +240,13 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       "command": "send",
       "room": vm.room.id,
       "message": vm.chatForm.message
+    }));
+
+    // Add to messages (don't wait for socket)
+    vm.room.messages.push(new Message({
+      message: vm.chatForm.message,
+      username: SETTING.USER.USERNAME,
+      msg_type: UTILS.MESSAGE_TYPE.NORMAL
     }));
 
     // Clear message input
