@@ -44,9 +44,11 @@ body#verify {
     padding: 15px 0;
 }
 
+
 /* Card */
 
-.card, .card-header {
+.card,
+.card-header {
     border: 0;
 }
 
@@ -146,7 +148,7 @@ body#verify {
 }
 
 #chat-messages::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
 }
 
 #chat-messages::-webkit-scrollbar-thumb {
@@ -184,6 +186,7 @@ body#verify {
     opacity: 0.4;
     margin: 0;
     padding: 2px 0;
+    background: none !important;
 }
 
 #chat-messages .message:first-of-type {
