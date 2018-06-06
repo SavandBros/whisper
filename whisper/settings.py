@@ -66,6 +66,7 @@ ROOM_PRESENCE_TIMEOUT: int = 3600  # 1 hours
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'imasecret')
 DEBUG = os.environ.get('DJANGO_DEBUG', '')
 ALLOWED_HOSTS = [
+    'localhost',
     '127.0.0.1',
     '192.168.56.1',
     'savandbros-whisper.herokuapp.com',
