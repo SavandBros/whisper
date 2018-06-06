@@ -164,7 +164,7 @@ body#verify {
     margin: 5px 15px;
     padding: 5px 10px;
     display: block;
-    word-break: break-all;
+    word-break: break-word;
     width: fit-content;
     clear: both;
     max-width: 80%;
