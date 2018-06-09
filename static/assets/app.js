@@ -1,7 +1,7 @@
 /**
  * App module
  */
-var app = angular.module("whisper", []);
+var app = angular.module("whisper", ["hc.marked"]);
 
 /**
  * App config
