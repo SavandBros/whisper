@@ -38,11 +38,15 @@ app.factory("Convert", function ($sce) {
     bold: function (text) {
       return text.replace(/\*(.*?)\*/g, "<b>$1</b>");
     },
+    italic: function (text) {
+      return text.replace(/\_(.*?)\_/g, "<em>$1</em>");
+    },
     all: function (text) {
       if (text) {
         output = text;
         output = this.link(output);
         output = this.bold(output);
+        output = this.italic(output);
         return $sce.trustAsHtml(output);
       }
     }
