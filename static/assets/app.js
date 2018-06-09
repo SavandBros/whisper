@@ -28,6 +28,19 @@ app.constant("UTILS", {
 });
 
 /**
+ * Convert service
+ */
+app.service("Convert", function ($sce) {
+  var self = this;
+  self.link = function (text) {
+    if (!text) {
+      return "";
+    }
+    return $sce.trustAsHtml(text.linkify());
+  }
+});
+
+/**
  * Room class
  */
 app.service("Room", function () {
@@ -53,10 +66,11 @@ app.service("Room", function () {
 /**
  * Message class
  */
-app.service("Message", function (SETTING) {
+app.service("Message", function (SETTING, Convert) {
   return function (data) {
     var self = this;
     self.message = data.message;
+    self.convertedMessage = Convert.link(self.message);
     self.username = data.username;
     self.kind = data.msg_type;
     self.isOwn = function () {

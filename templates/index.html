@@ -44,7 +44,8 @@
             </span>
             <!-- Normal message -->
             <span ng-if="message.message">
-              <span class="user">[[ message.username ]]</span>[[ message.message ]]
+              <span class="user">[[ message.username ]]</span>
+              <span ng-bind-html="message.convertedMessage"></span>
             </span>
           </div>
         </div>

@@ -219,6 +219,13 @@ body#verify {
 }
 
 
+/* Chat message converts */
+
+#chat-messages a {
+    color: #3498db;
+}
+
+
 /* Chat box */
 
 #chat-box input {
