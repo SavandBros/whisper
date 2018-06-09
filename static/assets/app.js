@@ -28,15 +28,24 @@ app.constant("UTILS", {
 });
 
 /**
- * Convert service
+ * Convert factgory
  */
-app.service("Convert", function ($sce) {
-  var self = this;
-  self.link = function (text) {
-    if (!text) {
-      return "";
+app.factory("Convert", function ($sce) {
+  return {
+    link: function (text) {
+      return text.linkify();
+    },
+    bold: function (text) {
+      return text.replace(/\*(.*?)\*/g, "<b>$1</b>");
+    },
+    all: function (text) {
+      if (text) {
+        output = text;
+        output = this.link(output);
+        output = this.bold(output);
+        return $sce.trustAsHtml(output);
+      }
     }
-    return $sce.trustAsHtml(text.linkify());
   }
 });
 
@@ -70,7 +79,7 @@ app.service("Message", function (SETTING, Convert) {
   return function (data) {
     var self = this;
     self.message = data.message;
-    self.convertedMessage = Convert.link(self.message);
+    self.convertedMessage = Convert.all(self.message);
     self.username = data.username;
     self.kind = data.msg_type;
     self.isOwn = function () {
