@@ -90,10 +90,10 @@ app.service("Room", function () {
 app.service("Message", function (SETTING, Convert) {
   return function (data) {
     var self = this;
-    self.message = data.message;
-    self.convertedMessage = Convert.all(self.message);
+    self.rawMessage = data.message;
     self.username = data.username;
     self.kind = data.msg_type;
+    self.message = Convert.all(self.rawMessage);
     self.isOwn = function () {
       return self.username === SETTING.USER.USERNAME;
     };
