@@ -44,6 +44,9 @@ app.factory("Convert", function ($sce) {
     strike: function (text) {
       return text.replace(/\~(.*?)\~/g, "<s>$1</s>");
     },
+    code: function (text) {
+      return text.replace(/\`(.*?)\`/g, "<code>$1</code>");
+    },
     all: function (text) {
       if (text) {
         output = text;
@@ -51,6 +54,7 @@ app.factory("Convert", function ($sce) {
         output = this.bold(output);
         output = this.italic(output);
         output = this.strike(output);
+        output = this.code(output);
         return $sce.trustAsHtml(output);
       }
     }

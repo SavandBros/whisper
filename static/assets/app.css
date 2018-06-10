@@ -225,6 +225,14 @@ body#verify {
     color: #3498db;
 }
 
+#chat-messages code b,
+#chat-messages code em,
+#chat-messages code s {
+    font-weight: inherit;
+    font-style: inherit;
+    text-decoration: inherit;
+}
+
 
 /* Chat box */
 
