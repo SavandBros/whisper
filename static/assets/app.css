@@ -233,6 +233,14 @@ body#verify {
     text-decoration: inherit;
 }
 
+#chat-messages emoji img {
+    width: 22px;
+}
+
+#chat-messages emoji:not(.loaded) {
+    opacity: 0;
+}
+
 
 /* Chat box */
 

@@ -23,6 +23,16 @@
   <script src="{% static 'lib/angular/angular.js' %}"></script>
   <script src="{% static 'assets/app.js' %}?1"></script>
 
+  <script>
+    app.constant("PATH", {
+      EMOJI: {
+        "like": "{% static 'assets/img/emo/thumbs-up-sign.png' %}",
+        "dislike": "{% static 'assets/img/emo/thumbs-down-sign.png' %}",
+        "heart": "{% static 'assets/img/emo/heavy-black-heart.png' %}",
+      },
+    });
+  </script>
+
   {% if user.is_authenticated %}
     <script>
       app.constant("SETTING", {
