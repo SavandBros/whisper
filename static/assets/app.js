@@ -41,12 +41,16 @@ app.factory("Convert", function ($sce) {
     italic: function (text) {
       return text.replace(/\_(.*?)\_/g, "<em>$1</em>");
     },
+    strike: function (text) {
+      return text.replace(/\~(.*?)\~/g, "<s>$1</s>");
+    },
     all: function (text) {
       if (text) {
         output = text;
         output = this.link(output);
         output = this.bold(output);
         output = this.italic(output);
+        output = this.strike(output);
         return $sce.trustAsHtml(output);
       }
     }
