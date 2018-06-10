@@ -28,15 +28,57 @@ app.constant("UTILS", {
 });
 
 /**
+ * Convert factgory
+ */
+app.factory("Convert", function ($sce) {
+  return {
+    link: function (text) {
+      return text.linkify();
+    },
+    bold: function (text) {
+      return text.replace(/\*(.*?)\*/g, "<b>$1</b>");
+    },
+    italic: function (text) {
+      return text.replace(/\_(.*?)\_/g, "<em>$1</em>");
+    },
+    strike: function (text) {
+      return text.replace(/\~(.*?)\~/g, "<s>$1</s>");
+    },
+    code: function (text) {
+      return text.replace(/\`(.*?)\`/g, "<code>$1</code>");
+    },
+    emoji: function (text) {
+      return text.replace(/\:(.*?)\:/g, "<emoji>$1</emoji>");
+    },
+    all: function (text) {
+      if (text) {
+        output = text;
+        output = this.link(output);
+        output = this.bold(output);
+        output = this.italic(output);
+        output = this.strike(output);
+        output = this.code(output);
+        output = this.emoji(output);
+        return $sce.trustAsHtml(output);
+      }
+    }
+  }
+});
+
+/**
  * Room class
  */
-app.service("Room", function () {
+app.service("Room", function ($rootScope) {
   return function (data) {
     var self = this;
     self.id = data.id;
     self.title = data.title;
     self.messages = [];
     self.joined = false;
+    self.message = function (message) {
+      self.messages.push(message);
+      $rootScope.$broadcast("whisper.Room:message", self, message);
+    }
     self.join = function (socket) {
       if (self.joined) {
         return;
@@ -53,12 +95,13 @@ app.service("Room", function () {
 /**
  * Message class
  */
-app.service("Message", function (SETTING) {
+app.service("Message", function (SETTING, Convert) {
   return function (data) {
     var self = this;
-    self.message = data.message;
+    self.rawMessage = data.message;
     self.username = data.username;
     self.kind = data.msg_type;
+    self.message = Convert.all(self.rawMessage);
     self.isOwn = function () {
       return self.username === SETTING.USER.USERNAME;
     };
@@ -72,10 +115,7 @@ app.controller("MainController", function () {
 
   var vm = this;
 
-  vm.constructor = function () {
-
-    vm.hi = "wow";
-  };
+  vm.constructor = function () {};
 
   vm.constructor();
 });
@@ -83,7 +123,7 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message, $scope) {
+app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Message, $scope, $timeout) {
 
   var vm = this;
 
@@ -161,7 +201,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
 
         // Don't add own normal messages (already added to prevent socket delay)
         if (!message.isOwn() || message.kind !== UTILS.MESSAGE_TYPE.NORMAL) {
-          room.messages.push(message);
+          room.message(message);
         }
 
         // Scroll to bottom
@@ -243,7 +283,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
     }));
 
     // Add to messages (don't wait for socket)
-    vm.room.messages.push(new Message({
+    vm.room.message(new Message({
       message: vm.chatForm.message,
       username: SETTING.USER.USERNAME,
       msg_type: UTILS.MESSAGE_TYPE.NORMAL
@@ -292,6 +332,26 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, Room, Message,
       });
     }
   };
+
+  /**
+   * Handle emojis
+   */
+  $scope.$on("whisper.Room:message", function (room, message) {
+    $timeout(function () {
+      angular.element.each(angular.element("#chat-messages emoji"), function (i, item) {
+        var element = angular.element(item);
+        var emojiUrl = PATH.EMOJI[element.text()];
+        if (!element.hasClass("loaded")) {
+          if (emojiUrl) {
+            element.html("<img src='" + emojiUrl + "'>");
+          } else {
+            element.html(":" + element.text() + ":");
+          }
+          element.addClass("loaded");
+        }
+      });
+    });
+  });
 
   /**
    * Handle focus of window

@@ -1,3 +1,7 @@
+/* Import */
+
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:400,700");
+
 /* Global */
 
 body {
@@ -212,6 +216,29 @@ body#verify {
 
 #chat-messages .message.own .user {
     display: none;
+}
+
+
+/* Chat message converts */
+
+#chat-messages a {
+    color: #3498db;
+}
+
+#chat-messages code b,
+#chat-messages code em,
+#chat-messages code s {
+    font-weight: inherit;
+    font-style: inherit;
+    text-decoration: inherit;
+}
+
+#chat-messages emoji img {
+    width: 22px;
+}
+
+#chat-messages emoji:not(.loaded) {
+    opacity: 0;
 }
 
 
