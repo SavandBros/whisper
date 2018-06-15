@@ -51,11 +51,27 @@
         </div>
       </div>
 
+      <!-- Dropup -->
+      <div id="chat-dropup" ng-show="showDropup">
+
+        <!-- Emojis -->
+        <div id="emojis" ng-show="showEmojis">
+          <button class="btn btn-light" ng-repeat="(name, emoji) in emojis"
+            ng-click="index.insertToMessage(emoji)">[[ emoji ]]</button>
+        </div>
+      </div>
+
       <!-- Message box -->
       <div id="chat-box">
         <form ng-submit="index.message(index.chatForm.message)">
-          <input type="text" placeholder="Messsage" class="form-control"
-            id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <button class="btn btn-link" type="button" ng-class="{active: showEmojis}"
+                ng-click="showDropup = showEmojis = !showDropup">&#128578;</button>
+            </div>
+            <input type="text" placeholder="Messsage" class="form-control"
+              id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
+          </div>
         </form>
       </div>
     </div>

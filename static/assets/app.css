@@ -26,6 +26,29 @@ button {
 }
 
 
+/* Scrollbar */
+
+#chat-messages::-webkit-scrollbar-track,
+#chat-messages::-webkit-scrollbar {
+    background: #ddd;
+}
+
+#chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+    background: #fff;
+}
+
+#chat-messages #messages-wrapper {
+    width: 100%;
+    max-height: 200px;
+    position: absolute;
+    bottom: 0;
+}
+
+
 /* Pages */
 
 body#index {
@@ -146,26 +169,6 @@ body#verify {
     position: relative;
 }
 
-#chat-messages::-webkit-scrollbar-track,
-#chat-messages::-webkit-scrollbar {
-    background: #ddd;
-}
-
-#chat-messages::-webkit-scrollbar {
-    width: 6px;
-}
-
-#chat-messages::-webkit-scrollbar-thumb {
-    background: #fff;
-}
-
-#chat-messages #messages-wrapper {
-    width: 100%;
-    max-height: 200px;
-    position: absolute;
-    bottom: 0;
-}
-
 #chat-messages .message {
     margin: 5px 15px;
     padding: 5px 10px;
@@ -233,21 +236,59 @@ body#verify {
     text-decoration: inherit;
 }
 
-#chat-messages emoji img {
-    width: 22px;
+/* Chat dropup */
+
+#chat-dropup {
+    position: absolute;
+    z-index: 1;
+    width: calc(100% - 50px);
+    left: 25px;
+    bottom: 85px;
+    height: 220px;
+    background: #fff;
+    overflow-y: auto;
+    padding: 5px;
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.5);
+    text-align: center;
 }
 
-#chat-messages emoji:not(.loaded) {
-    opacity: 0;
+#chat-dropup::-webkit-scrollbar-track,
+#chat-dropup::-webkit-scrollbar {
+    background: #fff;
+}
+
+#chat-dropup::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-dropup::-webkit-scrollbar-thumb {
+    background: #ddd;
+}
+
+#chat-dropup .btn {
+    width: 60px;
+    font-size: 1.6rem;
 }
 
 
 /* Chat box */
 
-#chat-box input {
+#chat-box input,
+#chat-box .btn {
     border: 0;
     box-shadow: none;
     background: whitesmoke;
     border-radius: 0;
     padding: 15px;
+}
+
+#chat-box input {
+    border-left: 1px solid #dfdfdf;
+    margin-left: 1px;
+}
+
+
+#chat-box .btn:hover,
+#chat-box .btn.active {
+    background: #dfdfdf;
 }

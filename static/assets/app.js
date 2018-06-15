@@ -52,12 +52,6 @@ app.factory("Convert", function ($sce) {
     code: function (text) {
       return text.replace(/\`(.*?)\`/g, "<code>$1</code>");
     },
-    emoji: function (text) {
-      if (this.tools.hasElement(text, "a")) {
-        return text;
-      }
-      return text.replace(/\:(.*?)\:/g, "<emoji>$1</emoji>");
-    },
     all: function (text) {
       if (text) {
         output = text;
@@ -66,7 +60,6 @@ app.factory("Convert", function ($sce) {
         output = this.italic(output);
         output = this.strike(output);
         output = this.code(output);
-        output = this.emoji(output);
         return $sce.trustAsHtml(output);
       }
     }
@@ -85,7 +78,6 @@ app.service("Room", function ($rootScope) {
     self.joined = false;
     self.message = function (message) {
       self.messages.push(message);
-      $rootScope.$broadcast("whisper.Room:message", self, message);
     }
     self.join = function (socket) {
       if (self.joined) {
@@ -131,7 +123,7 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Message, $scope, $timeout) {
+app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Message, $scope, $timeout, $http) {
 
   var vm = this;
 
@@ -254,6 +246,13 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     vm.socket.onclose = function () {
       console.log("Disconnected from chat socket");
     };
+
+    /**
+     * Get emojis
+     */
+    $http.get(PATH.EMOJIS).then(function (data) {
+      $scope.emojis = data.data;
+    });
   };
 
   /**
@@ -299,6 +298,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
 
     // Clear message input
     vm.chatForm.message = "";
+
+    // Close dropup
+    $scope.showDropup = $scope.showEmojis = false;
   };
 
   /**
@@ -342,24 +344,21 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
   };
 
   /**
-   * Handle emojis
+   * Insert a text into the chat input in the current position
+   *
+   * @param {string} text
    */
-  $scope.$on("whisper.Room:message", function (room, message) {
+  vm.insertToMessage = function (text) {
+    var element = angular.element("#focus")[0];
+    var pos = element.selectionStart;
+    var dest = angular.copy(vm.chatForm.message);
+    vm.chatForm.message = dest.substr(0, pos) + text + dest.substr(pos);
+    element.focus();
     $timeout(function () {
-      angular.element.each(angular.element("#chat-messages emoji"), function (i, item) {
-        var element = angular.element(item);
-        var emojiUrl = PATH.EMOJI[element.text()];
-        if (!element.hasClass("loaded")) {
-          if (emojiUrl) {
-            element.html("<img src='" + emojiUrl + "'>");
-          } else {
-            element.html(":" + element.text() + ":");
-          }
-          element.addClass("loaded");
-        }
-      });
-    });
-  });
+      element.selectionStart = pos + 2;
+      element.selectionEnd = pos + 2;
+    }, 100);
+  };
 
   /**
    * Handle focus of window
