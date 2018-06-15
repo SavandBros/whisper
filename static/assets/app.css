@@ -244,7 +244,7 @@ body#verify {
     z-index: 1;
     width: calc(100% - 50px);
     left: 25px;
-    bottom: 85px;
+    bottom: 80px;
     height: 220px;
     background: #f8f9fa;
     overflow-y: auto;
