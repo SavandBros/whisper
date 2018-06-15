@@ -21,31 +21,24 @@
   <script src="{% static 'lib/popper/popper.js' %}"></script>
   <script src="{% static 'lib/bootstrap/bootstrap.js' %}"></script>
   <script src="{% static 'lib/angular/angular.js' %}"></script>
-  <script src="{% static 'assets/app.js' %}?1"></script>
   <script src="https://simplewebrtc.com/latest-v2.js"></script>
+  <script src="{% static 'assets/app.js' %}?1"></script>
 
   <script>
     app.constant("PATH", {
       EMOJIS: "{% static 'assets/emojis.json' %}",
     });
   </script>
+  <style>
+    #localVideo{
+      width: 150px;
+    }
 
-  <script>
-      var webrtc = new SimpleWebRTC({
-      // the id/element dom element that will hold "our" video
-      localVideoEl: 'localVideo',
-      // the id/element dom element that will hold remote videos
-      remoteVideosEl: 'remoteVideos',
-      // immediately ask for camera access
-      autoRequestMedia: true
-  });
+    #remoteVideos {
+      height: 150px;
+    }
 
-    // we have to wait until it's ready
-    webrtc.on('readyToCall', function () {
-        // you can name it anything
-        webrtc.joinRoom('Makiato');
-    });
-  </script>
+  </style>
 
   {% if user.is_authenticated %}
     <script>
