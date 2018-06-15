@@ -33,7 +33,7 @@ app.constant("UTILS", {
 app.factory("Convert", function ($sce) {
   return {
     link: function (text) {
-      return text.linkify();
+      return linkifyStr(text);
     },
     bold: function (text) {
       return text.replace(/\*(.*?)\*/g, "<b>$1</b>");
