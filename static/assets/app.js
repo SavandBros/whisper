@@ -32,6 +32,11 @@ app.constant("UTILS", {
  */
 app.factory("Convert", function ($sce) {
   return {
+    tools: {
+      hasElement: function (text, element) {
+        return angular.element(document.createElement("text")).html(text).has(element).length > 0;
+      }
+    },
     link: function (text) {
       return linkifyStr(text);
     },
@@ -48,6 +53,9 @@ app.factory("Convert", function ($sce) {
       return text.replace(/\`(.*?)\`/g, "<code>$1</code>");
     },
     emoji: function (text) {
+      if (this.tools.hasElement(text, "a")) {
+        return text;
+      }
       return text.replace(/\:(.*?)\:/g, "<emoji>$1</emoji>");
     },
     all: function (text) {
