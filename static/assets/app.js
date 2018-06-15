@@ -156,6 +156,20 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     vm.isFocused = true;
 
     /**
+     * @type {object}
+     */
+    vm.dropup = {
+      /**
+       * @type {boolean}
+       */
+      dropup: false,
+      /**
+       * @type {boolean}
+       */
+      emojis: false
+    };
+
+    /**
      * Get rooms
      */
     angular.forEach(VIEW.ROOMS, function (room) {
@@ -300,7 +314,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     vm.chatForm.message = "";
 
     // Close dropup
-    $scope.showDropup = $scope.showEmojis = false;
+    vm.dropup.dropup = vm.dropup.emojis = false;
   };
 
   /**
@@ -353,11 +367,32 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     var pos = element.selectionStart;
     var dest = angular.copy(vm.chatForm.message);
     vm.chatForm.message = dest.substr(0, pos) + text + dest.substr(pos);
-    element.focus();
-    $timeout(function () {
-      element.selectionStart = pos + 2;
-      element.selectionEnd = pos + 2;
-    }, 100);
+    vm.focusInput(2);
+  };
+
+  /**
+   * Toggle dropup with emojis
+   */
+  vm.toggleEmojis = function () {
+    vm.focusInput();
+    vm.dropup.dropup = vm.dropup.emojis = !vm.dropup.dropup;
+  };
+
+  /**
+   * Focus input on cursor position
+   */
+  vm.focusInput = function (offset) {
+    var input = angular.element("#focus")[0];
+    var posStart = input.selectionEnd;
+    var posEnd = input.selectionEnd;
+    input.focus();
+    if (offset) {
+      $timeout(function () {
+        input.selectionStart = posStart + offset;
+        input.selectionEnd = posEnd + offset;
+      }, 100);
+    }
+    vm.isFocused = true;
   };
 
   /**
@@ -375,10 +410,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
   /**
    * Handle focus of window and chat input
    */
-  angular.element(window).on("load focus", function () {
-    angular.element("#focus").focus();
-    vm.isFocused = true;
-  });
+  angular.element(window).on("load focus", vm.focusInput);
 
   /**
    * Handle losing focus of window

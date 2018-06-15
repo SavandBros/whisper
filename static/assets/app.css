@@ -236,6 +236,7 @@ body#verify {
     text-decoration: inherit;
 }
 
+
 /* Chat dropup */
 
 #chat-dropup {
@@ -245,16 +246,16 @@ body#verify {
     left: 25px;
     bottom: 85px;
     height: 220px;
-    background: #fff;
+    background: #f8f9fa;
     overflow-y: auto;
     padding: 5px;
-    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
     text-align: center;
 }
 
 #chat-dropup::-webkit-scrollbar-track,
 #chat-dropup::-webkit-scrollbar {
-    background: #fff;
+    background: #f8f9fa;
 }
 
 #chat-dropup::-webkit-scrollbar {
@@ -287,8 +288,16 @@ body#verify {
     margin-left: 1px;
 }
 
-
 #chat-box .btn:hover,
 #chat-box .btn.active {
     background: #dfdfdf;
+}
+
+@media (max-width: 576px) {
+    .emojis-button {
+        display: none;
+    }
+    #chat-box input {
+        margin: 0;
+    }
 }

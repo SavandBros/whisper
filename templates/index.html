@@ -52,11 +52,11 @@
       </div>
 
       <!-- Dropup -->
-      <div id="chat-dropup" ng-show="showDropup">
+      <div id="chat-dropup" ng-show="index.dropup.dropup">
 
         <!-- Emojis -->
-        <div id="emojis" ng-show="showEmojis">
-          <button class="btn btn-light" ng-repeat="(name, emoji) in emojis"
+        <div id="emojis" ng-show="index.dropup.emojis">
+          <button class="btn btn-light" ng-repeat="emoji in emojis"
             ng-click="index.insertToMessage(emoji)">[[ emoji ]]</button>
         </div>
       </div>
@@ -65,9 +65,8 @@
       <div id="chat-box">
         <form ng-submit="index.message(index.chatForm.message)">
           <div class="input-group">
-            <div class="input-group-prepend">
-              <button class="btn btn-link" type="button" ng-class="{active: showEmojis}"
-                ng-click="showDropup = showEmojis = !showDropup">&#128578;</button>
+            <div class="input-group-prepend emojis-button">
+              <a class="btn btn-link" ng-class="{active: showEmojis}" ng-click="index.toggleEmojis()">&#128578;</a>
             </div>
             <input type="text" placeholder="Messsage" class="form-control"
               id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
