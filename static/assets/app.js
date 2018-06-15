@@ -32,8 +32,13 @@ app.constant("UTILS", {
  */
 app.factory("Convert", function ($sce) {
   return {
+    tools: {
+      hasElement: function (text, element) {
+        return angular.element(document.createElement("text")).html(text).has(element).length > 0;
+      }
+    },
     link: function (text) {
-      return text.linkify();
+      return linkifyStr(text);
     },
     bold: function (text) {
       return text.replace(/\*(.*?)\*/g, "<b>$1</b>");
@@ -47,9 +52,6 @@ app.factory("Convert", function ($sce) {
     code: function (text) {
       return text.replace(/\`(.*?)\`/g, "<code>$1</code>");
     },
-    emoji: function (text) {
-      return text.replace(/\:(.*?)\:/g, "<emoji>$1</emoji>");
-    },
     all: function (text) {
       if (text) {
         output = text;
@@ -58,7 +60,6 @@ app.factory("Convert", function ($sce) {
         output = this.italic(output);
         output = this.strike(output);
         output = this.code(output);
-        output = this.emoji(output);
         return $sce.trustAsHtml(output);
       }
     }
@@ -77,7 +78,6 @@ app.service("Room", function ($rootScope) {
     self.joined = false;
     self.message = function (message) {
       self.messages.push(message);
-      $rootScope.$broadcast("whisper.Room:message", self, message);
     }
     self.join = function (socket) {
       if (self.joined) {
@@ -123,7 +123,7 @@ app.controller("MainController", function () {
 /**
  * Index controller
  */
-app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Message, $scope, $timeout) {
+app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Message, $scope, $timeout, $http) {
 
   var vm = this;
 
@@ -154,6 +154,20 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
      * @type {boolean}
      */
     vm.isFocused = true;
+
+    /**
+     * @type {object}
+     */
+    vm.dropup = {
+      /**
+       * @type {boolean}
+       */
+      dropup: false,
+      /**
+       * @type {boolean}
+       */
+      emojis: false
+    };
 
     /**
      * Get rooms
@@ -246,6 +260,13 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     vm.socket.onclose = function () {
       console.log("Disconnected from chat socket");
     };
+
+    /**
+     * Get emojis
+     */
+    $http.get(PATH.EMOJIS).then(function (data) {
+      $scope.emojis = data.data;
+    });
   };
 
   /**
@@ -291,6 +312,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
 
     // Clear message input
     vm.chatForm.message = "";
+
+    // Close dropup
+    vm.dropup.dropup = vm.dropup.emojis = false;
   };
 
   /**
@@ -334,24 +358,42 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
   };
 
   /**
-   * Handle emojis
+   * Insert a text into the chat input in the current position
+   *
+   * @param {string} text
    */
-  $scope.$on("whisper.Room:message", function (room, message) {
-    $timeout(function () {
-      angular.element.each(angular.element("#chat-messages emoji"), function (i, item) {
-        var element = angular.element(item);
-        var emojiUrl = PATH.EMOJI[element.text()];
-        if (!element.hasClass("loaded")) {
-          if (emojiUrl) {
-            element.html("<img src='" + emojiUrl + "'>");
-          } else {
-            element.html(":" + element.text() + ":");
-          }
-          element.addClass("loaded");
-        }
-      });
-    });
-  });
+  vm.insertToMessage = function (text) {
+    var element = angular.element("#focus")[0];
+    var pos = element.selectionStart;
+    var dest = angular.copy(vm.chatForm.message);
+    vm.chatForm.message = dest.substr(0, pos) + text + dest.substr(pos);
+    vm.focusInput(2);
+  };
+
+  /**
+   * Toggle dropup with emojis
+   */
+  vm.toggleEmojis = function () {
+    vm.focusInput();
+    vm.dropup.dropup = vm.dropup.emojis = !vm.dropup.dropup;
+  };
+
+  /**
+   * Focus input on cursor position
+   */
+  vm.focusInput = function (offset) {
+    var input = angular.element("#focus")[0];
+    var posStart = input.selectionEnd;
+    var posEnd = input.selectionEnd;
+    input.focus();
+    if (offset) {
+      $timeout(function () {
+        input.selectionStart = posStart + offset;
+        input.selectionEnd = posEnd + offset;
+      }, 100);
+    }
+    vm.isFocused = true;
+  };
 
   /**
    * Handle focus of window
@@ -368,10 +410,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
   /**
    * Handle focus of window and chat input
    */
-  angular.element(window).on("load focus", function () {
-    angular.element("#focus").focus();
-    vm.isFocused = true;
-  });
+  angular.element(window).on("load focus", vm.focusInput);
 
   /**
    * Handle losing focus of window

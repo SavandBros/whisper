@@ -14,8 +14,8 @@
   <link rel="stylesheet" href="{% static 'assets/app.css' %}?1"/>
 
   <script src="{% static 'lib/reconnecting-websocket/reconnecting-websocket.js' %}"></script>
-  <script src="{% static 'lib/linkify/linkify.js' %}"></script>
-  <script src="{% static 'lib/linkify/linkify-string.js' %}"></script>
+  <script src="{% static 'lib/linkifyjs/linkify.js' %}"></script>
+  <script src="{% static 'lib/linkifyjs/linkify-string.js' %}"></script>
 
   <script src="{% static 'lib/jquery/jquery.js' %}"></script>
   <script src="{% static 'lib/popper/popper.js' %}"></script>
@@ -25,11 +25,7 @@
 
   <script>
     app.constant("PATH", {
-      EMOJI: {
-        "like": "{% static 'assets/img/emo/thumbs-up-sign.png' %}",
-        "dislike": "{% static 'assets/img/emo/thumbs-down-sign.png' %}",
-        "heart": "{% static 'assets/img/emo/heavy-black-heart.png' %}",
-      },
+      EMOJIS: "{% static 'assets/emojis.json' %}",
     });
   </script>
 
