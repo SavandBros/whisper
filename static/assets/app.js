@@ -6,6 +6,7 @@ var app = angular.module("whisper", []);
        * Simple Web RTC
        */
       webrtc = new SimpleWebRTC({
+        url: "https://signals.savandbros.com/",
         // the id/element dom element that will hold "our" video
         localVideoEl: "local-video",
         // the id/element dom element that will hold remote videos
