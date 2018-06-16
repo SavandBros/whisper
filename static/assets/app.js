@@ -2,18 +2,6 @@
  * App module
  */
 var app = angular.module("whisper", []);
-var webrtc = new SimpleWebRTC({
-  // the id/element dom element that will hold "our" video
-  localVideoEl: 'localVideo',
-  // the id/element dom element that will hold remote videos
-  remoteVideosEl: 'remoteVideos',
-  // immediately ask for camera access
-  autoRequestMedia: true
-});
-webrtc.on('readyToCall', function () {
-  // you can name it anything
-  webrtc.joinRoom("amir-alireza");
-});
 
 /**
  * App config
@@ -21,8 +9,8 @@ webrtc.on('readyToCall', function () {
 app.config(function ($locationProvider, $compileProvider, $interpolateProvider) {
   $locationProvider.hashPrefix("");
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|sms|tel):/);
-  $interpolateProvider.startSymbol('[[');
-  $interpolateProvider.endSymbol(']]');
+  $interpolateProvider.startSymbol("[[");
+  $interpolateProvider.endSymbol("]]");
 });
 
 /**
@@ -165,6 +153,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     /**
      * @type {boolean}
      */
+    vm.inVideoCall = false;
+
+    /**
+     * @type {boolean}
+     */
     vm.isFocused = true;
 
     /**
@@ -199,7 +192,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
      * Correctly decide between ws:// and wss://
      */
     vm.ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-    vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
+    vm.ws_path = vm.ws_scheme + "://" + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
 
     /**
@@ -406,6 +399,38 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     }
     vm.isFocused = true;
   };
+
+  /**
+   * Join video call
+   */
+  vm.joinVideoCall = function () {
+
+    // Toggle call
+    vm.inVideoCall = !vm.inVideoCall;
+
+    // Not in any video call
+    if (vm.inVideoCall) {
+      /**
+       * Simple Web RTC
+       */
+      vm.webrtc = new SimpleWebRTC({
+        // the id/element dom element that will hold "our" video
+        localVideoEl: "local-video",
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: "remote-videos",
+        // immediately ask for camera access
+        autoRequestMedia: true
+      });
+      vm.webrtc.on("readyToCall", function () {
+        vm.webrtc.joinRoom(vm.room.id);
+      });
+    }
+
+    // In a video call, leave room
+    else {
+      vm.webrtc.leaveRoom(vm.room.id);
+    }
+  }
 
   /**
    * Handle focus of window

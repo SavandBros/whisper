@@ -222,6 +222,16 @@ body#verify {
 }
 
 
+/* Chat messages (video) */
+
+#local-video,
+#remote-videos {
+    height: 380px;
+    width: 100%;
+    background: #000;
+}
+
+
 /* Chat message converts */
 
 #chat-messages a {

@@ -36,8 +36,12 @@
       <!-- Messages -->
       <div id="chat-messages">
         <div id="messages-wrapper">
-          <div class="message" ng-repeat="message in index.room.messages"
-            ng-if="index.room" ng-class="{own: message.isOwn(), announce: !message.message}">
+
+          <!-- Chat messages -->
+          <div class="message"
+            ng-repeat="message in index.room.messages"
+            ng-if="index.room && !index.inVideoCall"
+            ng-class="{own: message.isOwn(), announce: !message.message}">
             <!-- Announce -->
             <span ng-if="!message.message">
               [[ message.username ]] [[ message.kind == 4 ? "joined" : "left" ]] the chatroom.
@@ -47,6 +51,12 @@
               <span class="user">[[ message.username ]]</span>
               <span ng-bind-html="message.message"></span>
             </span>
+          </div>
+
+          <!-- Video calls -->
+          <div ng-if="index.inVideoCall">
+            <video id="local-video"></video>
+            <div id="remote-videos"></div>
           </div>
         </div>
       </div>
@@ -66,7 +76,10 @@
         <form ng-submit="index.message(index.chatForm.message)">
           <div class="input-group">
             <div class="input-group-prepend emojis-button">
-              <a class="btn btn-link" ng-class="{active: showEmojis}" ng-click="index.toggleEmojis()">&#128578;</a>
+              <a class="btn btn-link" ng-class="{active: index.showEmojis}" ng-click="index.toggleEmojis()">&#128578;</a>
+            </div>
+            <div class="input-group-prepend emojis-button">
+              <a class="btn btn-link" ng-class="{active: index.inVideoCall}" ng-click="index.joinVideoCall()">&#128579;</a>
             </div>
             <input type="text" placeholder="Messsage" class="form-control"
               id="focus" autocomplete="off" ng-model="index.chatForm.message"/>
