@@ -2,7 +2,20 @@
  * App module
  */
 var app = angular.module("whisper", []);
-
+      /**
+       * Simple Web RTC
+       */
+      webrtc = new SimpleWebRTC({
+        // the id/element dom element that will hold "our" video
+        localVideoEl: "local-video",
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: "remote-videos",
+        // immediately ask for camera access
+        autoRequestMedia: true
+      });
+      webrtc.on("readyToCall", function () {
+        webrtc.joinRoom("test");
+      });
 /**
  * App config
  */
@@ -426,9 +439,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
       });
     }
 
-    // In a video call, leave room
+    // In a video call, handgup
     else {
-      vm.webrtc.leaveRoom(vm.room.id);
+      // vm.webrtc.hangUp();
     }
   }
 

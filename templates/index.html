@@ -36,11 +36,9 @@
       <!-- Messages -->
       <div id="chat-messages">
         <div id="messages-wrapper">
-
-          <!-- Chat messages -->
           <div class="message"
             ng-repeat="message in index.room.messages"
-            ng-if="index.room && !index.inVideoCall"
+            ng-if="index.room"
             ng-class="{own: message.isOwn(), announce: !message.message}">
             <!-- Announce -->
             <span ng-if="!message.message">
@@ -51,12 +49,6 @@
               <span class="user">[[ message.username ]]</span>
               <span ng-bind-html="message.message"></span>
             </span>
-          </div>
-
-          <!-- Video calls -->
-          <div ng-if="index.inVideoCall">
-            <video id="local-video"></video>
-            <div id="remote-videos"></div>
           </div>
         </div>
       </div>
@@ -86,6 +78,17 @@
           </div>
         </form>
       </div>
+    </div>
+  </div>
+
+  <!-- Container -->
+  <div class="container-fluid bg-info border-top border-dark">
+
+    <div class="container py-5">
+
+      <!-- Video -->
+      <video id="local-video"></video>
+      <div id="remote-videos"></div>
     </div>
   </div>
 

@@ -225,11 +225,18 @@ body#verify {
 /* Chat messages (video) */
 
 #local-video,
-#remote-videos {
-    height: 380px;
+#remote-videos video {
+    height: 720px;
     width: 100%;
-    background: #000;
+    background: #333;
+    border: 2px solid #333;
 }
+
+#local-video {
+    width: 200px;
+    height: 180px;
+}
+
 
 
 /* Chat message converts */
