@@ -228,7 +228,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
 
         // Scroll to bottom
         var wrapper = angular.element("#chat-messages");
-        wrapper.stop().animate({ scrollTop: wrapper.prop("scrollHeight") });
+        wrapper.stop().animate({
+          scrollTop: wrapper.prop("scrollHeight")
+        });
       }
 
       // Notify
