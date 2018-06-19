@@ -204,7 +204,7 @@ body#verify {
     margin-bottom: 15px;
 }
 
-#chat-messages .message.owns {
+#chat-messages .message.own {
     border-radius: 8px 8px 0 8px;
     float: right;
     background: #fff4da;
@@ -215,7 +215,7 @@ body#verify {
     font-size: 15px;
 }
 
-#chat-messages .message.owns .head {
+#chat-messages .message.own .head {
     display: none;
 }
 
