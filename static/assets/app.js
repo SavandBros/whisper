@@ -115,7 +115,7 @@ app.service("Room", function ($rootScope) {
 /**
  * Message class
  */
-app.service("Message", function (SETTING, UTILS, Convert) {
+app.service("Message", function (SETTING, UTILS, Convert, $filter) {
   return function (data) {
     var self = this;
     self.rawMessage = data.message;
@@ -123,6 +123,14 @@ app.service("Message", function (SETTING, UTILS, Convert) {
     self.color = helpers.randomIndex(UTILS.MESSAGE_COLOR);
     self.kind = data.msg_type;
     self.message = Convert.all(self.rawMessage);
+    self.date = new Date();
+    self.getDate = function () {
+      var format = "HH:mm a"
+      if ((new Date()) - self.date > new Date(new Date() - 86400000)) {
+        format = null;
+      }
+      return $filter("date")(self.date, format);
+    };
     self.isOwn = function () {
       return self.username === SETTING.USER.USERNAME;
     };

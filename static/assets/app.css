@@ -204,21 +204,29 @@ body#verify {
     margin-bottom: 15px;
 }
 
-#chat-messages .message.own {
+#chat-messages .message.owns {
     border-radius: 8px 8px 0 8px;
     float: right;
     background: #fff4da;
 }
 
-#chat-messages .message .user {
-    opacity: 0.5;
-    display: block;
+#chat-messages .message .head {
     font-style: italic;
     font-size: 15px;
 }
 
-#chat-messages .message.own .user {
+#chat-messages .message.owns .head {
     display: none;
+}
+
+#chat-messages .message .head .user {
+    opacity: 0.6;
+}
+
+#chat-messages .message .head .date {
+    opacity: 0.4;
+    margin-left: 15px;
+    float: right;
 }
 
 
