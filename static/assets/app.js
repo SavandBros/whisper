@@ -1,4 +1,13 @@
 /**
+ * Helpers
+ */
+var helpers = {
+  randomIndex: function (list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+};
+
+/**
  * App module
  */
 var app = angular.module("whisper", []);
