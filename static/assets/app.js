@@ -9,8 +9,8 @@ var app = angular.module("whisper", []);
 app.config(function ($locationProvider, $compileProvider, $interpolateProvider) {
   $locationProvider.hashPrefix("");
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|sms|tel):/);
-  $interpolateProvider.startSymbol('[[');
-  $interpolateProvider.endSymbol(']]');
+  $interpolateProvider.startSymbol("[[");
+  $interpolateProvider.endSymbol("]]");
 });
 
 /**
@@ -187,7 +187,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
      * Correctly decide between ws:// and wss://
      */
     vm.ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-    vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
+    vm.ws_path = vm.ws_scheme + "://" + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
 
     /**
@@ -220,7 +220,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
 
         // Scroll to bottom
         var wrapper = angular.element("#chat-messages");
-        wrapper.stop().animate({ scrollTop: wrapper.prop("scrollHeight") });
+        wrapper.stop().animate({
+          scrollTop: wrapper.prop("scrollHeight")
+        });
       }
 
       // Notify
