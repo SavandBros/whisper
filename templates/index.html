@@ -44,7 +44,10 @@
             </span>
             <!-- Normal message -->
             <span ng-if="message.message">
-              <span class="user">[[ message.username ]]</span>
+              <div class="head">
+                <span class="user">[[ message.username ]]</span>
+                <span class="date">[[ message.getDate() ]]</span>
+              </div>
               <span ng-bind-html="message.message"></span>
             </span>
           </div>
