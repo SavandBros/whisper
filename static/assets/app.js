@@ -104,10 +104,9 @@ app.service("Message", function (SETTING, Convert, $filter) {
     self.message = Convert.all(self.rawMessage);
     self.date = new Date();
     self.getDate = function () {
-      var yesterday = new Date(new Date() - 86400000);
       var format = "HH:mm a"
-      if (self.date - new Date() > yesterday) {
-        format = "null";
+      if ((new Date()) - self.date > new Date(new Date() - 86400000)) {
+        format = null;
       }
       return $filter("date")(self.date, format);
     };
