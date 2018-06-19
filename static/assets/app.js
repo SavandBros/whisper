@@ -115,11 +115,12 @@ app.service("Room", function ($rootScope) {
 /**
  * Message class
  */
-app.service("Message", function (SETTING, Convert) {
+app.service("Message", function (SETTING, UTILS, Convert) {
   return function (data) {
     var self = this;
     self.rawMessage = data.message;
     self.username = data.username;
+    self.color = helpers.randomIndex(UTILS.MESSAGE_COLOR);
     self.kind = data.msg_type;
     self.message = Convert.all(self.rawMessage);
     self.isOwn = function () {
