@@ -95,13 +95,21 @@ app.service("Room", function ($rootScope) {
 /**
  * Message class
  */
-app.service("Message", function (SETTING, Convert) {
+app.service("Message", function (SETTING, Convert, $filter) {
   return function (data) {
     var self = this;
     self.rawMessage = data.message;
     self.username = data.username;
     self.kind = data.msg_type;
     self.message = Convert.all(self.rawMessage);
+    self.date = new Date();
+    self.getDate = function () {
+      var format = "HH:mm a"
+      if ((new Date()) - self.date > new Date(new Date() - 86400000)) {
+        format = null;
+      }
+      return $filter("date")(self.date, format);
+    };
     self.isOwn = function () {
       return self.username === SETTING.USER.USERNAME;
     };
@@ -220,7 +228,9 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
 
         // Scroll to bottom
         var wrapper = angular.element("#chat-messages");
-        wrapper.stop().animate({ scrollTop: wrapper.prop("scrollHeight") });
+        wrapper.stop().animate({
+          scrollTop: wrapper.prop("scrollHeight")
+        });
       }
 
       // Notify
