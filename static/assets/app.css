@@ -219,10 +219,6 @@ body#verify {
     display: none;
 }
 
-#chat-messages .message .head .user {
-    opacity: 0.6;
-}
-
 #chat-messages .message .head .date {
     opacity: 0.4;
     margin-left: 15px;
