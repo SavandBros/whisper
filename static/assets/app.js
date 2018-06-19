@@ -95,13 +95,22 @@ app.service("Room", function ($rootScope) {
 /**
  * Message class
  */
-app.service("Message", function (SETTING, Convert) {
+app.service("Message", function (SETTING, Convert, $filter) {
   return function (data) {
     var self = this;
     self.rawMessage = data.message;
     self.username = data.username;
     self.kind = data.msg_type;
     self.message = Convert.all(self.rawMessage);
+    self.date = new Date();
+    self.getDate = function () {
+      var yesterday = new Date(new Date() - 86400000);
+      var format = "HH:mm a"
+      if (self.date - new Date() > yesterday) {
+        format = "null";
+      }
+      return $filter("date")(self.date, format);
+    };
     self.isOwn = function () {
       return self.username === SETTING.USER.USERNAME;
     };
