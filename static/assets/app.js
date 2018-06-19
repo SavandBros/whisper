@@ -1,4 +1,13 @@
 /**
+ * Helpers
+ */
+var helpers = {
+  randomIndex: function (list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+};
+
+/**
  * App module
  */
 var app = angular.module("whisper", []);
@@ -9,8 +18,8 @@ var app = angular.module("whisper", []);
 app.config(function ($locationProvider, $compileProvider, $interpolateProvider) {
   $locationProvider.hashPrefix("");
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|sms|tel):/);
-  $interpolateProvider.startSymbol('[[');
-  $interpolateProvider.endSymbol(']]');
+  $interpolateProvider.startSymbol("[[");
+  $interpolateProvider.endSymbol("]]");
 });
 
 /**
@@ -24,7 +33,18 @@ app.constant("UTILS", {
     MUTE: 3,
     JOIN: 4,
     LEAVE: 5
-  }
+  },
+  MESSAGE_COLOR: [
+    "hsl(0, 79%, 66%)",
+    "hsl(30, 79%, 66%)",
+    "hsl(100, 79%, 66%)",
+    "hsl(165, 79%, 66%)",
+    "hsl(175, 79%, 66%)",
+    "hsl(219, 79%, 66%)",
+    "hsl(250, 79%, 66%)",
+    "hsl(281, 79%, 66%)",
+    "hsl(330, 79%, 66%)"
+  ]
 });
 
 /**
@@ -95,11 +115,12 @@ app.service("Room", function ($rootScope) {
 /**
  * Message class
  */
-app.service("Message", function (SETTING, Convert, $filter) {
+app.service("Message", function (SETTING, UTILS, Convert, $filter) {
   return function (data) {
     var self = this;
     self.rawMessage = data.message;
     self.username = data.username;
+    self.color = helpers.randomIndex(UTILS.MESSAGE_COLOR);
     self.kind = data.msg_type;
     self.message = Convert.all(self.rawMessage);
     self.date = new Date();
@@ -195,7 +216,7 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
      * Correctly decide between ws:// and wss://
      */
     vm.ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
-    vm.ws_path = vm.ws_scheme + '://' + window.location.host + "/chat/stream/";
+    vm.ws_path = vm.ws_scheme + "://" + window.location.host + "/chat/stream/";
     vm.socket = new ReconnectingWebSocket(vm.ws_path);
 
     /**
