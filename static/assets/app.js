@@ -11,7 +11,21 @@ var helpers = {
  * App module
  */
 var app = angular.module("whisper", []);
-
+      /**
+       * Simple Web RTC
+       */
+      webrtc = new SimpleWebRTC({
+        url: "https://signals.savandbros.com/",
+        // the id/element dom element that will hold "our" video
+        localVideoEl: "local-video",
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: "remote-videos",
+        // immediately ask for camera access
+        autoRequestMedia: true
+      });
+      webrtc.on("readyToCall", function () {
+        webrtc.joinRoom("test");
+      });
 /**
  * App config
  */
@@ -178,6 +192,11 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
      * @type {Room}
      */
     vm.room = null;
+
+    /**
+     * @type {boolean}
+     */
+    vm.inVideoCall = false;
 
     /**
      * @type {boolean}
@@ -425,6 +444,38 @@ app.controller("IndexController", function (UTILS, SETTING, VIEW, PATH, Room, Me
     }
     vm.isFocused = true;
   };
+
+  /**
+   * Join video call
+   */
+  vm.joinVideoCall = function () {
+
+    // Toggle call
+    vm.inVideoCall = !vm.inVideoCall;
+
+    // Not in any video call
+    if (vm.inVideoCall) {
+      /**
+       * Simple Web RTC
+       */
+      vm.webrtc = new SimpleWebRTC({
+        // the id/element dom element that will hold "our" video
+        localVideoEl: "local-video",
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: "remote-videos",
+        // immediately ask for camera access
+        autoRequestMedia: true
+      });
+      vm.webrtc.on("readyToCall", function () {
+        vm.webrtc.joinRoom(vm.room.id);
+      });
+    }
+
+    // In a video call, handgup
+    else {
+      // vm.webrtc.hangUp();
+    }
+  }
 
   /**
    * Handle focus of window

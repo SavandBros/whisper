@@ -226,6 +226,23 @@ body#verify {
 }
 
 
+/* Chat messages (video) */
+
+#local-video,
+#remote-videos video {
+    height: 720px;
+    width: 100%;
+    background: #333;
+    border: 2px solid #333;
+}
+
+#local-video {
+    width: 200px;
+    height: 180px;
+}
+
+
+
 /* Chat message converts */
 
 #chat-messages a {
